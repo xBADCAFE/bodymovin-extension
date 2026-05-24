@@ -77,10 +77,17 @@
     var vendoredDir = repoRoot.fsName + '/bundle/jsx';
     var bundleFile = new File(repoRoot.fsName + '/bundle/jsx-ts/bodymovin.bundle.jsx');
 
-    // Initialize namespace before loading anything (matches initializer.jsx)
-    $.__bodymovin = { esprima: {} };
+    // Load order: TS bundle FIRST (its index.ts resets $.__bodymovin to
+    // {esprima:{}}), then vendored polyfills attach onto the fresh
+    // namespace. Loading polyfills before the bundle would lose them
+    // to the reset.
+    if (!bundleFile.exists) {
+      report.exception = 'Bundle missing at ' + bundleFile.fsName;
+    } else {
+      $.evalFile(bundleFile.fsName);
+      report.bundle_loaded = true;
+    }
 
-    // Vendored polyfills — load in dependency order
     var jsonFile = new File(vendoredDir + '/JSON.jsx');
     if (jsonFile.exists) {
       $.evalFile(jsonFile.fsName);
@@ -97,15 +104,6 @@
       }
       report.polyfills_loaded.esprima = esprimaKeyCount > 0;
     }
-
-    // The TS bundle — must load BEFORE escodegen (escodegen mutates bm_expressionHelper)
-    if (!bundleFile.exists) {
-      report.exception = 'Bundle missing at ' + bundleFile.fsName;
-    } else {
-      $.evalFile(bundleFile.fsName);
-      report.bundle_loaded = true;
-    }
-
     var escodegenFile = new File(vendoredDir + '/escodegen.jsx');
     if (escodegenFile.exists) {
       $.evalFile(escodegenFile.fsName);

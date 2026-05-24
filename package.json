@@ -95,6 +95,7 @@
     "build:ts": "rollup -c rollup.config.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "smoke": "tests/smoke/run.sh",
+    "export-test": "tests/export/run.sh",
     "test": "node scripts/test.js --env=jsdom"
   },
   "jest": {
