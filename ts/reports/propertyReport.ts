@@ -1,13 +1,12 @@
+import { bm_generalUtils as generalUtils } from '../utils/generalUtils';
+import { bm_messageClassReport as MessageClass } from './messageClassReport';
+
 function Property(this: any, property: any): void {
   this.property = property;
   this.process();
 }
 
-(function (): void {
-  const generalUtils = $.__bodymovin.bm_generalUtils;
-  const MessageClass = $.__bodymovin.bm_messageClassReport;
-  generalUtils.extendPrototype(Property, MessageClass);
-})();
+generalUtils.extendPrototype(Property, MessageClass);
 
 Property.prototype.processExpressions = function (): void {
   const rendererTypes = $.__bodymovin.bm_reportRendererTypes;

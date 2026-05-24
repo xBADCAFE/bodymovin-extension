@@ -1,14 +1,13 @@
+import { bm_generalUtils as generalUtils } from '../utils/generalUtils';
+import { bm_messageClassReport as MessageClass } from './messageClassReport';
+
 function Position(this: any, transform: any, isThreeD: any): void {
   this.transform = transform;
   this.isThreeD = isThreeD;
   this.process();
 }
 
-(function (): void {
-  const generalUtils = $.__bodymovin.bm_generalUtils;
-  const MessageClass = $.__bodymovin.bm_messageClassReport;
-  generalUtils.extendPrototype(Position, MessageClass);
-})();
+generalUtils.extendPrototype(Position, MessageClass);
 
 Position.prototype.processExpressions = function (): void {
 };

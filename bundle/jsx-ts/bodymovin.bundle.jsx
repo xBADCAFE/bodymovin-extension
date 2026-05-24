@@ -2,6 +2,466 @@
 (function () {
     'use strict';
 
+    String.prototype.trim = function () {
+        return this.replace(/^\s+|\s+$/g, "");
+    };
+    String.prototype.startsWith = function (search, position) {
+        position = position || 0;
+        return this.indexOf(search, position) === position;
+    };
+    String.prototype.endsWith = function (search, position) {
+        var len = this.length;
+        if (typeof position !== "number" || !isFinite(position) || position > len) {
+            position = len;
+        }
+        position -= search.length;
+        var lastIndex = this.indexOf(search, position);
+        return lastIndex !== -1 && lastIndex === position;
+    };
+    String.prototype.includes = function (search, start) {
+        if (typeof start !== "number") {
+            start = 0;
+        }
+        return this.indexOf(search, start) !== -1;
+    };
+    String.prototype.repeat = function (count) {
+        if (count < 0) {
+            throw new RangeError("repeat count must be non-negative");
+        }
+        if (count === Infinity) {
+            throw new RangeError("repeat count must be less than infinity");
+        }
+        count = Math.floor(count);
+        if (count === 0) {
+            return "";
+        }
+        var str = String(this);
+        var result = "";
+        while (count > 0) {
+            if (count & 1) {
+                result += str;
+            }
+            count >>= 1;
+            if (count > 0) {
+                str += str;
+            }
+        }
+        return result;
+    };
+    String.prototype.padStart = function (targetLength, padString) {
+        var str = String(this);
+        if (targetLength <= str.length) {
+            return str;
+        }
+        padString = String(padString || " ");
+        var padLength = targetLength - str.length;
+        if (padLength > padString.length) {
+            padString = padString.repeat(Math.ceil(padLength / padString.length));
+        }
+        return padString.slice(0, padLength) + str;
+    };
+    String.prototype.padEnd = function (targetLength, padString) {
+        var str = String(this);
+        if (targetLength <= str.length) {
+            return str;
+        }
+        padString = String(padString || " ");
+        var padLength = targetLength - str.length;
+        if (padLength > padString.length) {
+            padString = padString.repeat(Math.ceil(padLength / padString.length));
+        }
+        return str + padString.slice(0, padLength);
+    };
+
+    Object.keys = function (obj) {
+        if (obj === null || obj === undefined || typeof obj !== "object") {
+            var message = "Object.keys called on a non-object";
+            throw new Error(message);
+        }
+        var keys = [];
+        for (var key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                keys.push(key);
+            }
+        }
+        return keys;
+    };
+    Object.values = function (obj) {
+        if (obj === null || typeof obj !== "object") {
+            var message = "Object.values called on a non-object";
+            throw new Error(message);
+        }
+        var result = [];
+        for (var key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                result.push(obj[key]);
+            }
+        }
+        return result;
+    };
+    Object.entries = function (obj) {
+        if (obj === null || typeof obj !== "object") {
+            var message = "Object.entries called on a non-object";
+            throw new Error(message);
+        }
+        var entries = [];
+        for (var key in obj) {
+            if (Object.prototype.hasOwnProperty.call(obj, key)) {
+                entries.push([key, obj[key]]);
+            }
+        }
+        return entries;
+    };
+    Object.fromEntries = function (entries) {
+        if (entries == null) {
+            var message = "Cannot convert undefined or null to object";
+            logger.error(message);
+            throw new TypeError(message);
+        }
+        var obj = {};
+        if (entries.length !== undefined) {
+            for (var i = 0; i < entries.length; i++) {
+                var entry = entries[i];
+                if (entry && entry.length >= 2) {
+                    var key = String(entry[0]);
+                    obj[key] = entry[1];
+                }
+            }
+        }
+        return obj;
+    };
+    Object.assign = function (target) {
+        var sources = [];
+        for (var _i = 1; _i < arguments.length; _i++) {
+            sources[_i - 1] = arguments[_i];
+        }
+        if (target == null) {
+            var message = "Cannot convert undefined or null to object";
+            logger.error(message);
+            throw new TypeError(message);
+        }
+        var to = Object(target);
+        for (var i = 0; i < sources.length; i++) {
+            var source = sources[i];
+            if (source != null) {
+                for (var key in source) {
+                    if (Object.prototype.hasOwnProperty.call(source, key)) {
+                        to[key] = source[key];
+                    }
+                }
+            }
+        }
+        return to;
+    };
+
+    Array.prototype.includes = function (searchElement, fromIndex) {
+        if (this == null) {
+            throw new Error('"this" is null or not defined');
+        }
+        var o = Object(this);
+        var len = o.length >>> 0;
+        if (len === 0) {
+            return false;
+        }
+        var n = fromIndex || 0;
+        var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+        while (k < len) {
+            if (o[k] === searchElement || (searchElement !== searchElement && o[k] !== o[k])) {
+                return true;
+            }
+            k++;
+        }
+        return false;
+    };
+    Array.prototype.indexOf = function (searchElement, fromIndex) {
+        if (this == null) {
+            throw new Error('"this" is null or not defined');
+        }
+        var o = Object(this);
+        var len = o.length >>> 0;
+        if (len === 0) {
+            return -1;
+        }
+        var n = fromIndex || 0;
+        var k = Math.max(n >= 0 ? n : len - Math.abs(n), 0);
+        for (; k < len; k++) {
+            if (o[k] === searchElement) {
+                return k;
+            }
+        }
+        return -1;
+    };
+    Array.isArray = function (arg) {
+        return Object.prototype.toString.call(arg) === "[object Array]";
+    };
+    Array.prototype.map = function (callback, thisArg) {
+        if (this == null) {
+            throw new TypeError("this is null or undefined");
+        }
+        var O = Object(this);
+        var len = O.length >>> 0;
+        if (typeof callback !== "function") {
+            throw new TypeError(callback + " is not a function");
+        }
+        var T;
+        if (arguments.length > 1) {
+            T = thisArg;
+        }
+        var A = new Array(len);
+        var k = 0;
+        while (k < len) {
+            var kValue = void 0, mappedValue = void 0;
+            if (k in O) {
+                kValue = O[k];
+                mappedValue = callback.call(T, kValue, k, O);
+                A[k] = mappedValue;
+            }
+            k++;
+        }
+        return A;
+    };
+    Array.from = function (arrayLike, mapFn, thisArg) {
+        if (arrayLike == null) {
+            throw new TypeError("Array.from requires an array-like object");
+        }
+        var items = Object(arrayLike);
+        var len = items.length >>> 0;
+        var result = new Array(len);
+        for (var i = 0; i < len; i++) {
+            if (i in items) {
+                if (mapFn) {
+                    result[i] = mapFn.call(thisArg, items[i], i);
+                }
+                else {
+                    result[i] = items[i];
+                }
+            }
+        }
+        return result;
+    };
+    Array.prototype.forEach = function (callback, thisArg) {
+        if (this == null) {
+            throw new TypeError("this is null or undefined");
+        }
+        var O = Object(this);
+        var len = O.length >>> 0;
+        if (typeof callback !== "function") {
+            throw new TypeError(callback + " is not a function");
+        }
+        var T;
+        if (arguments.length > 1) {
+            T = thisArg;
+        }
+        for (var k = 0; k < len; k++) {
+            if (k in O) {
+                callback.call(T, O[k], k, O);
+            }
+        }
+    };
+    Array.prototype.filter = function (predicate, thisArg) {
+        if (this == null) {
+            throw new TypeError("this is null or undefined");
+        }
+        var O = Object(this);
+        var len = O.length >>> 0;
+        if (typeof predicate !== "function") {
+            throw new TypeError(predicate + " is not a function");
+        }
+        var result = [];
+        var T;
+        if (arguments.length > 1) {
+            T = thisArg;
+        }
+        for (var k = 0; k < len; k++) {
+            if (k in O) {
+                var val = O[k];
+                if (predicate.call(T, val, k, O)) {
+                    result.push(val);
+                }
+            }
+        }
+        return result;
+    };
+    Array.prototype.find = function (predicate, thisArg) {
+        if (this == null) {
+            throw new TypeError("this is null or undefined");
+        }
+        var O = Object(this);
+        var len = O.length >>> 0;
+        if (typeof predicate !== "function") {
+            throw new TypeError(predicate + " is not a function");
+        }
+        var T;
+        if (arguments.length > 1) {
+            T = thisArg;
+        }
+        for (var k = 0; k < len; k++) {
+            if (k in O) {
+                var val = O[k];
+                if (predicate.call(T, val, k, O)) {
+                    return val;
+                }
+            }
+        }
+        return undefined;
+    };
+    Array.prototype.findIndex = function (predicate, thisArg) {
+        if (this == null) {
+            throw new TypeError("this is null or undefined");
+        }
+        var O = Object(this);
+        var len = O.length >>> 0;
+        if (typeof predicate !== "function") {
+            throw new TypeError(predicate + " is not a function");
+        }
+        var T;
+        if (arguments.length > 1) {
+            T = thisArg;
+        }
+        for (var k = 0; k < len; k++) {
+            if (k in O) {
+                var val = O[k];
+                if (predicate.call(T, val, k, O)) {
+                    return k;
+                }
+            }
+        }
+        return -1;
+    };
+    Array.prototype.reduce = function (callback, initialValue) {
+        if (this == null) {
+            throw new TypeError("this is null or undefined");
+        }
+        var O = Object(this);
+        var len = O.length >>> 0;
+        if (typeof callback !== "function") {
+            throw new TypeError(callback + " is not a function");
+        }
+        if (len === 0 && arguments.length < 2) {
+            throw new TypeError("Reduce of empty array with no initial value");
+        }
+        var k = 0;
+        var accumulator;
+        if (arguments.length >= 2) {
+            accumulator = initialValue;
+        }
+        else {
+            var kPresent = false;
+            while (!kPresent && k < len) {
+                kPresent = k in O;
+                if (kPresent) {
+                    accumulator = O[k];
+                }
+                k++;
+            }
+            if (!kPresent) {
+                throw new TypeError("Reduce of empty array with no initial value");
+            }
+        }
+        while (k < len) {
+            if (k in O) {
+                accumulator = callback(accumulator, O[k], k, O);
+            }
+            k++;
+        }
+        return accumulator;
+    };
+    Array.prototype.some = function (predicate, thisArg) {
+        if (this == null) {
+            throw new TypeError("this is null or undefined");
+        }
+        var O = Object(this);
+        var len = O.length >>> 0;
+        if (typeof predicate !== "function") {
+            throw new TypeError(predicate + " is not a function");
+        }
+        var T;
+        if (arguments.length > 1) {
+            T = thisArg;
+        }
+        for (var k = 0; k < len; k++) {
+            if (k in O) {
+                if (predicate.call(T, O[k], k, O)) {
+                    return true;
+                }
+            }
+        }
+        return false;
+    };
+    Array.prototype.every = function (predicate, thisArg) {
+        if (this == null) {
+            throw new TypeError("this is null or undefined");
+        }
+        var O = Object(this);
+        var len = O.length >>> 0;
+        if (typeof predicate !== "function") {
+            throw new TypeError(predicate + " is not a function");
+        }
+        var T;
+        if (arguments.length > 1) {
+            T = thisArg;
+        }
+        for (var k = 0; k < len; k++) {
+            if (k in O) {
+                if (!predicate.call(T, O[k], k, O)) {
+                    return false;
+                }
+            }
+        }
+        return true;
+    };
+    Array.prototype.flat = function (depth) {
+        if (depth === void 0) { depth = 1; }
+        if (this == null) {
+            throw new TypeError("this is null or undefined");
+        }
+        var O = Object(this);
+        O.length >>> 0;
+        var flatten = function (arr, d) {
+            var result = [];
+            for (var i = 0; i < arr.length; i++) {
+                if (i in arr) {
+                    var element = arr[i];
+                    if (Array.isArray(element) && d > 0) {
+                        var flattened = flatten(element, d - 1);
+                        for (var j = 0; j < flattened.length; j++) {
+                            result.push(flattened[j]);
+                        }
+                    }
+                    else {
+                        result.push(element);
+                    }
+                }
+            }
+            return result;
+        };
+        return flatten(O, depth);
+    };
+
+    if (!Math.trunc) {
+        Math.trunc = function (x) {
+            if (isNaN(x)) {
+                return NaN;
+            }
+            if (x === 0 || x === Infinity || x === -Infinity) {
+                return x;
+            }
+            return x < 0 ? Math.ceil(x) : Math.floor(x);
+        };
+    }
+    if (!Math.sign) {
+        Math.sign = function (x) {
+            x = +x;
+            if (x === 0 || isNaN(x)) {
+                return x;
+            }
+            return x > 0 ? 1 : -1;
+        };
+    }
+    Math.log10 = function (x) {
+        return Math.log(x) / Math.LN10;
+    };
+
     var xLib;
     try {
         xLib = new ExternalObject('lib:\PlugPlugExternalObject');
@@ -169,19 +629,19 @@
         var comp = getActiveComp();
         if (comp) {
             var selectedLayers = comp.selectedLayers;
-            var i_1 = 0;
+            var i = 0;
             var layersInfo = [];
-            for (i_1 = 0; i_1 < selectedLayers.length; i_1 += 1) {
-                var layerInfo = buildLayerInfo(selectedLayers[i_1]);
+            for (i = 0; i < selectedLayers.length; i += 1) {
+                var layerInfo = buildLayerInfo(selectedLayers[i]);
                 layersInfo.push(layerInfo);
             }
             bm_eventDispatcher.sendEvent('bm:annotations:list', layersInfo);
         }
     }
     function findPseudoEffectByMatchName(matchName) {
-        for (var i_2 = 0; i_2 < pseudoEffects.length; i_2 += 1) {
-            if (pseudoEffects[i_2].matchName === matchName) {
-                return pseudoEffects[i_2];
+        for (var i = 0; i < pseudoEffects.length; i += 1) {
+            if (pseudoEffects[i].matchName === matchName) {
+                return pseudoEffects[i];
             }
         }
         return null;
@@ -841,8 +1301,8 @@
     }
     function isRenderFileOnPath(file, path) {
         var filePath = file.path;
-        for (var i_1 = 0; i_1 < path.length; i_1 += 1) {
-            if (filePath[i_1] !== path[i_1]) {
+        for (var i = 0; i < path.length; i += 1) {
+            if (filePath[i] !== path[i]) {
                 return false;
             }
         }
@@ -894,8 +1354,8 @@
     function removeFolderContent(folder) {
         var folderFiles = folder.getFiles();
         var fileOrFolder;
-        for (var i_2 = 0; i_2 < folderFiles.length; i_2 += 1) {
-            fileOrFolder = folderFiles[i_2];
+        for (var i = 0; i < folderFiles.length; i += 1) {
+            fileOrFolder = folderFiles[i];
             if (fileOrFolder.constructor === Folder) {
                 removeFolderContent(fileOrFolder);
             }
@@ -915,8 +1375,8 @@
         appTemporaryFolder.changePath('Bodymovin');
         var appFolderFiles = appTemporaryFolder.getFiles();
         var temporaryRemovableFolder;
-        for (var i_3 = 0; i_3 < appFolderFiles.length; i_3 += 1) {
-            temporaryRemovableFolder = appFolderFiles[i_3];
+        for (var i = 0; i < appFolderFiles.length; i += 1) {
+            temporaryRemovableFolder = appFolderFiles[i];
             if (temporaryRemovableFolder.getFiles) {
                 var createdDate = temporaryRemovableFolder.created;
                 var elapsedTime = (currentDate.getTime() - createdDate.getTime()) / 1000;
@@ -998,10 +1458,10 @@
             else if (curLayer.nullLayer) {
                 return layerTypes.nullLayer;
             }
-            var i_1;
-            for (i_1 = 0; i_1 < instanceOfArrayLength; i_1++) {
-                if (curLayer instanceof instanceOfArray[i_1]) {
-                    result = instanceOfArray[i_1].name;
+            var i = void 0;
+            for (i = 0; i < instanceOfArrayLength; i++) {
+                if (curLayer instanceof instanceOfArray[i]) {
+                    result = instanceOfArray[i].name;
                     break;
                 }
             }
@@ -1169,18 +1629,18 @@
             canEditPrefs = false;
         }
         storedRenderQueue = [];
-        for (var i_1 = 1; i_1 <= app.project.renderQueue.numItems; i_1++) {
-            var item = app.project.renderQueue.item(i_1);
+        for (var i = 1; i <= app.project.renderQueue.numItems; i++) {
+            var item = app.project.renderQueue.item(i);
             if (item.status === RQItemStatus.QUEUED) {
-                storedRenderQueue.push(i_1);
+                storedRenderQueue.push(i);
                 item.render = false;
             }
         }
     }
     function restoreRenderQueue() {
-        for (var i_2 = 0; i_2 < storedRenderQueue.length; i_2++) {
+        for (var i = 0; i < storedRenderQueue.length; i++) {
             try {
-                app.project.renderQueue.item(storedRenderQueue[i_2]).render = true;
+                app.project.renderQueue.item(storedRenderQueue[i]).render = true;
             }
             catch (error) { }
         }
@@ -1190,8 +1650,8 @@
         }
     }
     function renderQueueIsBusy() {
-        for (var i_3 = 1; i_3 <= app.project.renderQueue.numItems; i_3++) {
-            if (app.project.renderQueue.item(i_3).status == RQItemStatus.RENDERING) {
+        for (var i = 1; i <= app.project.renderQueue.numItems; i++) {
+            if (app.project.renderQueue.item(i).status == RQItemStatus.RENDERING) {
                 return true;
             }
         }
@@ -2038,13 +2498,13 @@
     function getLottiePath(bannerConfig) {
         var sourcePath = '';
         if (bannerConfig.lottie_origin === 'local' || bannerConfig.lottie_origin === 'cdnjs') {
-            var i_1 = 0;
-            var len_1 = lottiePaths.length;
-            while (i_1 < len_1) {
-                if (lottiePaths[i_1].value === bannerConfig.lottie_library) {
-                    sourcePath = lottiePaths[i_1][bannerConfig.lottie_origin];
+            var i = 0;
+            var len = lottiePaths.length;
+            while (i < len) {
+                if (lottiePaths[i].value === bannerConfig.lottie_library) {
+                    sourcePath = lottiePaths[i][bannerConfig.lottie_origin];
                 }
-                i_1 += 1;
+                i += 1;
             }
         }
         else if (bannerConfig.lottie_origin === 'file system') {
@@ -2591,8 +3051,8 @@
     }
     function splitSuccess(totalSegments) {
         var bm_fileManager = $.__bodymovin.bm_fileManager;
-        for (var i_1 = 0; i_1 < totalSegments; i_1 += 1) {
-            bm_fileManager.createFile(_destinationData.fileName + '_' + i_1 + '.json', ['standard']);
+        for (var i = 0; i < totalSegments; i += 1) {
+            bm_fileManager.createFile(_destinationData.fileName + '_' + i + '.json', ['standard']);
         }
         moveAssetsToDestination();
     }
@@ -2987,8 +3447,8 @@
             this.initializeMessages();
         }
         var messages = [];
-        for (var i_1 = 0; i_1 < this.__messages.length; i_1 += 1) {
-            messages.push(this.__messages[i_1].serialize());
+        for (var i = 0; i < this.__messages.length; i += 1) {
+            messages.push(this.__messages[i].serialize());
         }
         return messages;
     };
@@ -3089,311 +3549,6 @@
         return new ReportAnimatorMessage(type, renderers);
     }
 
-    function Property(property) {
-        this.property = property;
-        this.process();
-    }
-    (function () {
-        var generalUtils = $.__bodymovin.bm_generalUtils;
-        var MessageClass = $.__bodymovin.bm_messageClassReport;
-        generalUtils.extendPrototype(Property, MessageClass);
-    })();
-    Property.prototype.processExpressions = function () {
-        var rendererTypes = $.__bodymovin.bm_reportRendererTypes;
-        var builderTypes = $.__bodymovin.bm_reportBuilderTypes;
-        var messageTypes = $.__bodymovin.bm_reportMessageTypes;
-        var settingsHelper = $.__bodymovin.bm_settingsHelper;
-        var property = this.property;
-        if (property.expressionEnabled && !property.expressionError && !settingsHelper.shouldBakeExpressions()) {
-            this.addMessage(messageTypes.ERROR, [
-                rendererTypes.SKOTTIE,
-                rendererTypes.IOS,
-                rendererTypes.ANDROID,
-            ], builderTypes.EXPRESSIONS);
-            if (property.expression.indexOf('wiggle(') !== -1) {
-                this.addMessage(messageTypes.ERROR, [
-                    rendererTypes.BROWSER,
-                    rendererTypes.SKOTTIE,
-                    rendererTypes.IOS,
-                    rendererTypes.ANDROID,
-                ], builderTypes.WIGGLE);
-            }
-        }
-    };
-    Property.prototype.areValuesEqual = function (value1, value2) {
-        if (typeof value1 === 'number') {
-            return value1 === value2;
-        }
-        else if (value1.length) {
-            for (var i_1 = 0; i_1 < value1.length; i_1 += 1) {
-                if (value1[i_1] !== value2[i_1]) {
-                    return false;
-                }
-            }
-            return true;
-        }
-        return false;
-    };
-    Property.prototype.checkModifiedValue = function (value) {
-        if (!this.areValuesEqual(this.property.value, value)
-            || this.property.numKeys > 1
-            || (this.property.expressionEnabled && !this.property.expressionError)) {
-            return true;
-        }
-        else {
-            return false;
-        }
-    };
-    Property.prototype.process = function () {
-        this.processExpressions();
-    };
-    Property.prototype.serialize = function () {
-        return this.serializeMessages();
-    };
-    function bm_propertyReport(property) {
-        return new Property(property);
-    }
-
-    function Position(transform, isThreeD) {
-        this.transform = transform;
-        this.isThreeD = isThreeD;
-        this.process();
-    }
-    (function () {
-        var generalUtils = $.__bodymovin.bm_generalUtils;
-        var MessageClass = $.__bodymovin.bm_messageClassReport;
-        generalUtils.extendPrototype(Position, MessageClass);
-    })();
-    Position.prototype.processExpressions = function () {
-    };
-    Position.prototype.process = function () {
-        var propertyReport = $.__bodymovin.bm_propertyReport;
-        if (this.transform.position.dimensionsSeparated) {
-            this.px = propertyReport(this.transform.property('ADBE Position_0'));
-            this.py = propertyReport(this.transform.property('ADBE Position_1'));
-            if (this.isThreeD) {
-                this.pz = propertyReport(this.transform.property('ADBE Position_2'));
-            }
-        }
-        else {
-            this.p = propertyReport(this.transform.position);
-        }
-    };
-    Position.prototype.serialize = function () {
-        if (this.transform.position.dimensionsSeparated) {
-            return {
-                dimensionsSeparated: true,
-                positionX: this.px.serialize(),
-                positionY: this.py.serialize(),
-                positionZ: this.isThreeD ? this.pz.serialize() : undefined,
-            };
-        }
-        else {
-            return {
-                dimensionsSeparated: false,
-                position: this.p.serialize(),
-            };
-        }
-    };
-    function bm_positionReport(property, isThreeD) {
-        return new Position(property, isThreeD);
-    }
-
-    function Rotation(transform, isThreeD) {
-        this.transform = transform;
-        this.isThreeDimensional = isThreeD;
-        this.process();
-    }
-    (function () {
-        var generalUtils = $.__bodymovin.bm_generalUtils;
-        var MessageClass = $.__bodymovin.bm_messageClassReport;
-        generalUtils.extendPrototype(Rotation, MessageClass);
-    })();
-    Rotation.prototype.processExpressions = function () {
-    };
-    Rotation.prototype.process = function () {
-        var propertyReport = $.__bodymovin.bm_propertyReport;
-        if (this.isThreeDimensional) {
-            this.rx = propertyReport(this.transform.property('ADBE Rotate X'));
-            this.ry = propertyReport(this.transform.property('ADBE Rotate Y'));
-            this.rz = propertyReport(this.transform.property('ADBE Rotate Z'));
-            this.or = propertyReport(this.transform.Orientation);
-        }
-        else {
-            this.r = propertyReport(this.transform.rotation);
-        }
-    };
-    Rotation.prototype.serialize = function () {
-        if (this.isThreeDimensional) {
-            return {
-                isThreeD: true,
-                rotationX: this.rx.serialize(),
-                rotationY: this.ry.serialize(),
-                rotationZ: this.rz.serialize(),
-                orientation: this.or.serialize(),
-            };
-        }
-        else {
-            return {
-                isThreeD: false,
-                rotation: this.r.serialize(),
-            };
-        }
-    };
-    function bm_rotationReport(property, isThreeD) {
-        return new Rotation(property, isThreeD);
-    }
-
-    function Transform(transform, isThreeD) {
-        this.transform = transform;
-        this.isThreeD = isThreeD || false;
-        this.process();
-    }
-    Transform.prototype.processProperties = function () {
-        var propertyReport = $.__bodymovin.bm_propertyReport;
-        var positionReport = $.__bodymovin.bm_positionReport;
-        var rotationReport = $.__bodymovin.bm_rotationReport;
-        if (this.transform.Scale) {
-            this.scale = propertyReport(this.transform.Scale);
-        }
-        if (this.transform.Opacity) {
-            this.opacity = propertyReport(this.transform.Opacity);
-        }
-        if (this.transform.property('Start Opacity')) {
-            this.startOpacity = propertyReport(this.transform.property('Start Opacity'));
-        }
-        if (this.transform.property('End Opacity')) {
-            this.endOpacity = propertyReport(this.transform.property('End Opacity'));
-        }
-        if (this.transform.property('Anchor Point')) {
-            this.anchorPoint = propertyReport(this.transform.property('Anchor Point'));
-        }
-        this.rotation = rotationReport(this.transform, this.isThreeD);
-        this.position = positionReport(this.transform, this.isThreeD);
-        if (this.transform.property('Skew') && this.transform.property('Skew').canSetExpression) {
-            this.skew = propertyReport(this.transform.property('Skew'));
-            this.skewAxis = propertyReport(this.transform.property('Skew Axis'));
-        }
-    };
-    Transform.prototype.process = function () {
-        this.processProperties();
-    };
-    Transform.prototype.serialize = function () {
-        return {
-            anchorPoint: this.anchorPoint ? this.anchorPoint.serialize() : undefined,
-            scale: this.scale ? this.scale.serialize() : undefined,
-            opacity: this.opacity ? this.opacity.serialize() : undefined,
-            rotation: this.rotation ? this.rotation.serialize() : undefined,
-            position: this.position.serialize(),
-            skew: this.skew ? this.skew.serialize() : undefined,
-            skewAxis: this.skewAxis ? this.skewAxis.serialize() : undefined,
-            startOpacity: this.startOpacity ? this.startOpacity.serialize() : undefined,
-            endOpacity: this.endOpacity ? this.endOpacity.serialize() : undefined,
-        };
-    };
-    function bm_transformReportFactory(transform, isThreeD) {
-        return new Transform(transform, isThreeD);
-    }
-
-    var skippedEffectMatchNames = {
-        'ADBE Effect Built In Params': 'ADBE Effect Built In Params',
-        'Pseudo/Bodymovin Text Props 3': 'Pseudo/Bodymovin Text Props 3',
-    };
-    var supportedEffects = [
-        'ADBE Tint',
-        'ADBE Fill',
-        'ADBE Stroke',
-        'ADBE Tritone',
-        'ADBE Pro Levels2',
-        'ADBE Drop Shadow',
-        'ADBE Set Matte3',
-        'ADBE Gaussian Blur 2',
-    ];
-    function Effects(effects) {
-        this.effectsProperty = effects;
-        this.messages = [];
-        this._addedEffects = [];
-        this.process();
-    }
-    Effects.prototype.getMessageByTypeAndRenderers = function (type, renderers, builder) {
-        var effectMessageFactory = $.__bodymovin.bm_reportEffectMessageFactory;
-        var key = type + '_' + renderers.join('-');
-        for (var i_1 = 0; i_1 < this.messages.length; i_1 += 1) {
-            if (this.messages[i_1].key === key) {
-                return this.messages[i_1].message;
-            }
-        }
-        var message = {
-            key: key,
-            message: effectMessageFactory(type, renderers, builder),
-        };
-        this.messages.push(message);
-        return message.message;
-    };
-    Effects.prototype.addEffect = function (effectData) {
-        var messages = effectData.messages;
-        var messageData;
-        for (var i_2 = 0; i_2 < messages.length; i_2 += 1) {
-            messageData = messages[i_2];
-            var message = this.getMessageByTypeAndRenderers(messageData.type, messageData.renderers, messageData.builder);
-            message.addEffect(effectData.name);
-        }
-    };
-    Effects.prototype.process = function () {
-        var bm_eventDispatcher = $.__bodymovin.bm_eventDispatcher;
-        var effectsMessages = $.__bodymovin.bm_reportsEffectMessages;
-        for (var i_3 = 0; i_3 < this.effectsProperty.numProperties; i_3 += 1) {
-            var effectElement = this.effectsProperty(i_3 + 1);
-            bm_eventDispatcher.log('effectElement.matchName');
-            bm_eventDispatcher.log(effectElement.matchName);
-            if (effectElement.enabled && !skippedEffectMatchNames[effectElement.matchName]) {
-                if (effectsMessages[effectElement.matchName]) {
-                    this.addEffect(effectsMessages[effectElement.matchName]);
-                }
-                else {
-                    this.addUnhandledEffect(effectElement);
-                }
-                this.checkSupportedEffects(effectElement.matchName);
-            }
-        }
-    };
-    Effects.prototype.checkSupportedEffects = function (effectName) {
-        for (var i_4 = 0; i_4 < supportedEffects.length; i_4 += 1) {
-            if (supportedEffects[i_4] === effectName) {
-                this._addedEffects.push(effectName);
-            }
-        }
-    };
-    Effects.prototype.hasSupportedEffects = function () {
-        return this._addedEffects.length > 0;
-    };
-    Effects.prototype.addUnhandledEffect = function (effect) {
-        var rendererTypes = $.__bodymovin.bm_reportRendererTypes;
-        var messageTypes = $.__bodymovin.bm_reportMessageTypes;
-        var message = this.getMessageByTypeAndRenderers(messageTypes.ERROR, [
-            rendererTypes.BROWSER,
-            rendererTypes.IOS,
-            rendererTypes.ANDROID,
-            rendererTypes.SKOTTIE,
-        ]);
-        message.addEffect(effect.name);
-    };
-    Effects.prototype.serialize = function () {
-        if (this.messages.length === 0) {
-            return undefined;
-        }
-        else {
-            var messages = [];
-            for (var i_5 = 0; i_5 < this.messages.length; i_5 += 1) {
-                messages.push(this.messages[i_5].message.serialize());
-            }
-            return messages;
-        }
-    };
-    function bm_effectsReportFactory(effects) {
-        return new Effects(effects);
-    }
-
     var Gtlym = {
         CALL: {},
     };
@@ -3447,13 +3602,13 @@
             ob.matchName = property.matchName;
             if (property.numProperties) {
                 ob.properties = [];
-                var i_1 = 0;
-                var len_1 = property.numProperties;
-                while (i_1 < len_1) {
+                var i = 0;
+                var len = property.numProperties;
+                while (i < len) {
                     var propertyOb = {};
                     ob.properties.push(propertyOb);
-                    iterateProperties(property(i_1 + 1), propertyOb);
-                    i_1++;
+                    iterateProperties(property(i + 1), propertyOb);
+                    i++;
                 }
             }
             else {
@@ -3597,6 +3752,299 @@
         Gtlym: Gtlym,
     };
 
+    function Property(property) {
+        this.property = property;
+        this.process();
+    }
+    bm_generalUtils.extendPrototype(Property, bm_messageClassReport);
+    Property.prototype.processExpressions = function () {
+        var rendererTypes = $.__bodymovin.bm_reportRendererTypes;
+        var builderTypes = $.__bodymovin.bm_reportBuilderTypes;
+        var messageTypes = $.__bodymovin.bm_reportMessageTypes;
+        var settingsHelper = $.__bodymovin.bm_settingsHelper;
+        var property = this.property;
+        if (property.expressionEnabled && !property.expressionError && !settingsHelper.shouldBakeExpressions()) {
+            this.addMessage(messageTypes.ERROR, [
+                rendererTypes.SKOTTIE,
+                rendererTypes.IOS,
+                rendererTypes.ANDROID,
+            ], builderTypes.EXPRESSIONS);
+            if (property.expression.indexOf('wiggle(') !== -1) {
+                this.addMessage(messageTypes.ERROR, [
+                    rendererTypes.BROWSER,
+                    rendererTypes.SKOTTIE,
+                    rendererTypes.IOS,
+                    rendererTypes.ANDROID,
+                ], builderTypes.WIGGLE);
+            }
+        }
+    };
+    Property.prototype.areValuesEqual = function (value1, value2) {
+        if (typeof value1 === 'number') {
+            return value1 === value2;
+        }
+        else if (value1.length) {
+            for (var i = 0; i < value1.length; i += 1) {
+                if (value1[i] !== value2[i]) {
+                    return false;
+                }
+            }
+            return true;
+        }
+        return false;
+    };
+    Property.prototype.checkModifiedValue = function (value) {
+        if (!this.areValuesEqual(this.property.value, value)
+            || this.property.numKeys > 1
+            || (this.property.expressionEnabled && !this.property.expressionError)) {
+            return true;
+        }
+        else {
+            return false;
+        }
+    };
+    Property.prototype.process = function () {
+        this.processExpressions();
+    };
+    Property.prototype.serialize = function () {
+        return this.serializeMessages();
+    };
+    function bm_propertyReport(property) {
+        return new Property(property);
+    }
+
+    function Position(transform, isThreeD) {
+        this.transform = transform;
+        this.isThreeD = isThreeD;
+        this.process();
+    }
+    bm_generalUtils.extendPrototype(Position, bm_messageClassReport);
+    Position.prototype.processExpressions = function () {
+    };
+    Position.prototype.process = function () {
+        var propertyReport = $.__bodymovin.bm_propertyReport;
+        if (this.transform.position.dimensionsSeparated) {
+            this.px = propertyReport(this.transform.property('ADBE Position_0'));
+            this.py = propertyReport(this.transform.property('ADBE Position_1'));
+            if (this.isThreeD) {
+                this.pz = propertyReport(this.transform.property('ADBE Position_2'));
+            }
+        }
+        else {
+            this.p = propertyReport(this.transform.position);
+        }
+    };
+    Position.prototype.serialize = function () {
+        if (this.transform.position.dimensionsSeparated) {
+            return {
+                dimensionsSeparated: true,
+                positionX: this.px.serialize(),
+                positionY: this.py.serialize(),
+                positionZ: this.isThreeD ? this.pz.serialize() : undefined,
+            };
+        }
+        else {
+            return {
+                dimensionsSeparated: false,
+                position: this.p.serialize(),
+            };
+        }
+    };
+    function bm_positionReport(property, isThreeD) {
+        return new Position(property, isThreeD);
+    }
+
+    function Rotation(transform, isThreeD) {
+        this.transform = transform;
+        this.isThreeDimensional = isThreeD;
+        this.process();
+    }
+    bm_generalUtils.extendPrototype(Rotation, bm_messageClassReport);
+    Rotation.prototype.processExpressions = function () {
+    };
+    Rotation.prototype.process = function () {
+        var propertyReport = $.__bodymovin.bm_propertyReport;
+        if (this.isThreeDimensional) {
+            this.rx = propertyReport(this.transform.property('ADBE Rotate X'));
+            this.ry = propertyReport(this.transform.property('ADBE Rotate Y'));
+            this.rz = propertyReport(this.transform.property('ADBE Rotate Z'));
+            this.or = propertyReport(this.transform.Orientation);
+        }
+        else {
+            this.r = propertyReport(this.transform.rotation);
+        }
+    };
+    Rotation.prototype.serialize = function () {
+        if (this.isThreeDimensional) {
+            return {
+                isThreeD: true,
+                rotationX: this.rx.serialize(),
+                rotationY: this.ry.serialize(),
+                rotationZ: this.rz.serialize(),
+                orientation: this.or.serialize(),
+            };
+        }
+        else {
+            return {
+                isThreeD: false,
+                rotation: this.r.serialize(),
+            };
+        }
+    };
+    function bm_rotationReport(property, isThreeD) {
+        return new Rotation(property, isThreeD);
+    }
+
+    function Transform(transform, isThreeD) {
+        this.transform = transform;
+        this.isThreeD = isThreeD || false;
+        this.process();
+    }
+    Transform.prototype.processProperties = function () {
+        var propertyReport = $.__bodymovin.bm_propertyReport;
+        var positionReport = $.__bodymovin.bm_positionReport;
+        var rotationReport = $.__bodymovin.bm_rotationReport;
+        if (this.transform.Scale) {
+            this.scale = propertyReport(this.transform.Scale);
+        }
+        if (this.transform.Opacity) {
+            this.opacity = propertyReport(this.transform.Opacity);
+        }
+        if (this.transform.property('Start Opacity')) {
+            this.startOpacity = propertyReport(this.transform.property('Start Opacity'));
+        }
+        if (this.transform.property('End Opacity')) {
+            this.endOpacity = propertyReport(this.transform.property('End Opacity'));
+        }
+        if (this.transform.property('Anchor Point')) {
+            this.anchorPoint = propertyReport(this.transform.property('Anchor Point'));
+        }
+        this.rotation = rotationReport(this.transform, this.isThreeD);
+        this.position = positionReport(this.transform, this.isThreeD);
+        if (this.transform.property('Skew') && this.transform.property('Skew').canSetExpression) {
+            this.skew = propertyReport(this.transform.property('Skew'));
+            this.skewAxis = propertyReport(this.transform.property('Skew Axis'));
+        }
+    };
+    Transform.prototype.process = function () {
+        this.processProperties();
+    };
+    Transform.prototype.serialize = function () {
+        return {
+            anchorPoint: this.anchorPoint ? this.anchorPoint.serialize() : undefined,
+            scale: this.scale ? this.scale.serialize() : undefined,
+            opacity: this.opacity ? this.opacity.serialize() : undefined,
+            rotation: this.rotation ? this.rotation.serialize() : undefined,
+            position: this.position.serialize(),
+            skew: this.skew ? this.skew.serialize() : undefined,
+            skewAxis: this.skewAxis ? this.skewAxis.serialize() : undefined,
+            startOpacity: this.startOpacity ? this.startOpacity.serialize() : undefined,
+            endOpacity: this.endOpacity ? this.endOpacity.serialize() : undefined,
+        };
+    };
+    function bm_transformReportFactory(transform, isThreeD) {
+        return new Transform(transform, isThreeD);
+    }
+
+    var skippedEffectMatchNames = {
+        'ADBE Effect Built In Params': 'ADBE Effect Built In Params',
+        'Pseudo/Bodymovin Text Props 3': 'Pseudo/Bodymovin Text Props 3',
+    };
+    var supportedEffects = [
+        'ADBE Tint',
+        'ADBE Fill',
+        'ADBE Stroke',
+        'ADBE Tritone',
+        'ADBE Pro Levels2',
+        'ADBE Drop Shadow',
+        'ADBE Set Matte3',
+        'ADBE Gaussian Blur 2',
+    ];
+    function Effects(effects) {
+        this.effectsProperty = effects;
+        this.messages = [];
+        this._addedEffects = [];
+        this.process();
+    }
+    Effects.prototype.getMessageByTypeAndRenderers = function (type, renderers, builder) {
+        var effectMessageFactory = $.__bodymovin.bm_reportEffectMessageFactory;
+        var key = type + '_' + renderers.join('-');
+        for (var i = 0; i < this.messages.length; i += 1) {
+            if (this.messages[i].key === key) {
+                return this.messages[i].message;
+            }
+        }
+        var message = {
+            key: key,
+            message: effectMessageFactory(type, renderers, builder),
+        };
+        this.messages.push(message);
+        return message.message;
+    };
+    Effects.prototype.addEffect = function (effectData) {
+        var messages = effectData.messages;
+        var messageData;
+        for (var i = 0; i < messages.length; i += 1) {
+            messageData = messages[i];
+            var message = this.getMessageByTypeAndRenderers(messageData.type, messageData.renderers, messageData.builder);
+            message.addEffect(effectData.name);
+        }
+    };
+    Effects.prototype.process = function () {
+        var bm_eventDispatcher = $.__bodymovin.bm_eventDispatcher;
+        var effectsMessages = $.__bodymovin.bm_reportsEffectMessages;
+        for (var i = 0; i < this.effectsProperty.numProperties; i += 1) {
+            var effectElement = this.effectsProperty(i + 1);
+            bm_eventDispatcher.log('effectElement.matchName');
+            bm_eventDispatcher.log(effectElement.matchName);
+            if (effectElement.enabled && !skippedEffectMatchNames[effectElement.matchName]) {
+                if (effectsMessages[effectElement.matchName]) {
+                    this.addEffect(effectsMessages[effectElement.matchName]);
+                }
+                else {
+                    this.addUnhandledEffect(effectElement);
+                }
+                this.checkSupportedEffects(effectElement.matchName);
+            }
+        }
+    };
+    Effects.prototype.checkSupportedEffects = function (effectName) {
+        for (var i = 0; i < supportedEffects.length; i += 1) {
+            if (supportedEffects[i] === effectName) {
+                this._addedEffects.push(effectName);
+            }
+        }
+    };
+    Effects.prototype.hasSupportedEffects = function () {
+        return this._addedEffects.length > 0;
+    };
+    Effects.prototype.addUnhandledEffect = function (effect) {
+        var rendererTypes = $.__bodymovin.bm_reportRendererTypes;
+        var messageTypes = $.__bodymovin.bm_reportMessageTypes;
+        var message = this.getMessageByTypeAndRenderers(messageTypes.ERROR, [
+            rendererTypes.BROWSER,
+            rendererTypes.IOS,
+            rendererTypes.ANDROID,
+            rendererTypes.SKOTTIE,
+        ]);
+        message.addEffect(effect.name);
+    };
+    Effects.prototype.serialize = function () {
+        if (this.messages.length === 0) {
+            return undefined;
+        }
+        else {
+            var messages = [];
+            for (var i = 0; i < this.messages.length; i += 1) {
+                messages.push(this.messages[i].message.serialize());
+            }
+            return messages;
+        }
+    };
+    function bm_effectsReportFactory(effects) {
+        return new Effects(effects);
+    }
+
     function Masks(maskElements) {
         this.maskElements = maskElements;
         this.masks = [];
@@ -3606,15 +4054,15 @@
     Masks.prototype.process = function () {
         var maskReportFactory = $.__bodymovin.bm_maskReportFactory;
         var maskElement;
-        for (var i_1 = 0; i_1 < this.maskElements.numProperties; i_1 += 1) {
-            maskElement = this.maskElements(i_1 + 1);
+        for (var i = 0; i < this.maskElements.numProperties; i += 1) {
+            maskElement = this.maskElements(i + 1);
             this.masks.push(maskReportFactory(maskElement));
         }
     };
     Masks.prototype.serialize = function () {
         var serializedMasks = [];
-        for (var i_2 = 0; i_2 < this.masks.length; i_2 += 1) {
-            serializedMasks.push(this.masks[i_2].serialize());
+        for (var i = 0; i < this.masks.length; i += 1) {
+            serializedMasks.push(this.masks[i].serialize());
         }
         return {
             messages: this.serializeMessages(),
@@ -4083,8 +4531,8 @@
         var getStyleType = $.__bodymovin.getLayerStyleType;
         var styleElement;
         var styleType;
-        for (var i_1 = 0; i_1 < this.stylesProperty.numProperties; i_1 += 1) {
-            styleElement = this.stylesProperty(i_1 + 1);
+        for (var i = 0; i < this.stylesProperty.numProperties; i += 1) {
+            styleElement = this.stylesProperty(i + 1);
             styleType = getStyleType(styleElement.matchName);
             if (styleElement.enabled && styleType !== '') {
                 this.styles.push(buildStyleReport(styleType, styleElement));
@@ -4093,8 +4541,8 @@
     };
     LayerStyles.prototype.serialize = function () {
         var styles = [];
-        for (var i_2 = 0; i_2 < this.styles.length; i_2 += 1) {
-            styles.push(this.styles[i_2].serialize());
+        for (var i = 0; i < this.styles.length; i += 1) {
+            styles.push(this.styles[i].serialize());
         }
         return {
             messages: this.serializeMessages(),
@@ -4615,8 +5063,8 @@
     };
     ShapeCollection.prototype.serialize = function () {
         var shapes = [];
-        for (var i_1 = 0; i_1 < this.collection.length; i_1 += 1) {
-            shapes.push(this.collection[i_1].serialize());
+        for (var i = 0; i < this.collection.length; i += 1) {
+            shapes.push(this.collection[i].serialize());
         }
         return {
             shapes: shapes,
@@ -4676,9 +5124,9 @@
     bm_generalUtils.extendPrototype(TextSelector, bm_messageClassReport);
     TextSelector.prototype.getMessageByTypeAndRenderers = function (type, renderers) {
         var key = type + '_' + renderers.join('-');
-        for (var i_1 = 0; i_1 < this.messages.length; i_1 += 1) {
-            if (this.messages[i_1].key === key) {
-                return this.messages[i_1].message;
+        for (var i = 0; i < this.messages.length; i += 1) {
+            if (this.messages[i].key === key) {
+                return this.messages[i].message;
             }
         }
         var message = {
@@ -4691,8 +5139,8 @@
     TextSelector.prototype.addProperty = function (selectorData) {
         var messages = selectorData.messages;
         var messageData;
-        for (var i_2 = 0; i_2 < messages.length; i_2 += 1) {
-            messageData = messages[i_2];
+        for (var i = 0; i < messages.length; i += 1) {
+            messageData = messages[i];
             var message = this.getMessageByTypeAndRenderers(messageData.type, messageData.renderers);
             message.addProperty(selectorData.name);
         }
@@ -4727,8 +5175,8 @@
     };
     TextSelector.prototype.serialize = function () {
         var messages = this.serializeMessages();
-        for (var i_3 = 0; i_3 < this.messages.length; i_3 += 1) {
-            messages.push(this.messages[i_3].message.serialize());
+        for (var i = 0; i < this.messages.length; i += 1) {
+            messages.push(this.messages[i].message.serialize());
         }
         return {
             messages: messages,
@@ -4816,9 +5264,9 @@
     bm_generalUtils.extendPrototype(Animator, bm_messageClassReport);
     Animator.prototype.getMessageByTypeAndRenderers = function (type, renderers) {
         var key = type + '_' + renderers.join('-');
-        for (var i_1 = 0; i_1 < this.messages.length; i_1 += 1) {
-            if (this.messages[i_1].key === key) {
-                return this.messages[i_1].message;
+        for (var i = 0; i < this.messages.length; i += 1) {
+            if (this.messages[i].key === key) {
+                return this.messages[i].message;
             }
         }
         var message = {
@@ -4831,8 +5279,8 @@
     Animator.prototype.addProperty = function (animatorData) {
         var messages = animatorData.messages;
         var messageData;
-        for (var i_2 = 0; i_2 < messages.length; i_2 += 1) {
-            messageData = messages[i_2];
+        for (var i = 0; i < messages.length; i += 1) {
+            messageData = messages[i];
             var message = this.getMessageByTypeAndRenderers(messageData.type, messageData.renderers);
             message.addProperty(animatorData.name);
         }
@@ -5467,8 +5915,8 @@
             }
         }
         var animators = [];
-        for (var i_1 = 0; i_1 < this.animators.length; i_1 += 1) {
-            animators.push(this.animators[i_1].serialize());
+        for (var i = 0; i < this.animators.length; i += 1) {
+            animators.push(this.animators[i].serialize());
         }
         serializedData.text = {
             animators: animators,
@@ -5774,8 +6222,8 @@
         var collection = this.collection;
         var len = layers.length;
         var layer;
-        for (var i_1 = 0; i_1 < len; i_1 += 1) {
-            layer = layers[i_1 + 1];
+        for (var i = 0; i < len; i += 1) {
+            layer = layers[i + 1];
             collection.push(layerReportHelper.createLayer(layer, this.onLayerComplete, this.onLayerFailed));
         }
         this.asynchronouslyProcessCurrentLayer();
@@ -5816,8 +6264,8 @@
     };
     LayerCollection.prototype.serialize = function () {
         var layers = [];
-        for (var i_2 = 0; i_2 < this.collection.length; i_2 += 1) {
-            layers.push(this.collection[i_2].serialize());
+        for (var i = 0; i < this.collection.length; i += 1) {
+            layers.push(this.collection[i].serialize());
         }
         return {
             layers: layers,
@@ -5856,8 +6304,8 @@
                 layers: layerCollection.layers,
             };
             var messages = [];
-            for (var i_1 = 0; i_1 < this.messages.length; i_1 += 1) {
-                messages.push(this.messages[i_1].serialize());
+            for (var i = 0; i < this.messages.length; i += 1) {
+                messages.push(this.messages[i].serialize());
             }
             serializedData.messages = messages;
             serializedData.id = this.animation.id;
@@ -9921,15 +10369,15 @@
             var properties = propertyName.split('|');
             var keyframes = data.k;
             var persistingProps = {};
-            var i_1;
-            for (i_1 = 0; i_1 < properties.length; i_1 += 1) {
-                var sanitizedProp = bm_generalUtils.trimText(properties[i_1]);
+            var i = void 0;
+            for (i = 0; i < properties.length; i += 1) {
+                var sanitizedProp = bm_generalUtils.trimText(properties[i]);
                 if (textDict.hasOwnProperty(sanitizedProp)) {
                     persistingProps[textDict[sanitizedProp]] = true;
                 }
             }
-            for (i_1 = 0; i_1 < keyframes.length; i_1 += 1) {
-                var keyframe = keyframes[i_1];
+            for (i = 0; i < keyframes.length; i += 1) {
+                var keyframe = keyframes[i];
                 var textDocumentProp = keyframe.s;
                 for (var s in textDocumentProp) {
                     if (textDocumentProp.hasOwnProperty(s) && !persistingProps.hasOwnProperty(s)) {
@@ -9945,8 +10393,8 @@
         bm_eventDispatcher.log('addCompProperties');
         function iterateProperty(parent, frameRate, properties) {
             var totalProperties = parent.numProperties;
-            for (var i_2 = 0; i_2 < totalProperties; i_2 += 1) {
-                var property = parent.property(i_2 + 1);
+            for (var i = 0; i < totalProperties; i += 1) {
+                var property = parent.property(i + 1);
                 var propData = {
                     property: property,
                     id: property.name,
@@ -10075,24 +10523,24 @@
         exportedProps = {};
         var count = 0;
         var prop;
-        for (var i_3 = 0; i_3 < rootProperties.length; i_3 += 1) {
-            if (rootProperties[i_3].type === 'property') {
+        for (var i = 0; i < rootProperties.length; i += 1) {
+            if (rootProperties[i].type === 'property') {
                 prop = {
-                    p: rootProperties[i_3].val,
+                    p: rootProperties[i].val,
                 };
-                rootProperties[i_3].prop = prop;
-                exportedProps[rootProperties[i_3].id] = prop;
+                rootProperties[i].prop = prop;
+                exportedProps[rootProperties[i].id] = prop;
                 count += 1;
             }
-            else if (rootProperties[i_3].type === 'source') {
+            else if (rootProperties[i].type === 'source') {
                 count += 1;
             }
-            else if (rootProperties[i_3].type === 'group' && rootProperties[i_3].properties.length > 0) {
+            else if (rootProperties[i].type === 'group' && rootProperties[i].properties.length > 0) {
                 prop = {
-                    p: rootProperties[i_3].properties[0].val,
+                    p: rootProperties[i].properties[0].val,
                 };
-                rootProperties[i_3].prop = prop;
-                exportedProps[rootProperties[i_3].id] = prop;
+                rootProperties[i].prop = prop;
+                exportedProps[rootProperties[i].id] = prop;
                 count += 1;
             }
         }
@@ -10103,15 +10551,15 @@
     }
     function searchAsset(sourceData, savingData) {
         var bm_generalUtils = $.__bodymovin.bm_generalUtils;
-        for (var i_4 = 0; i_4 < rootProperties.length; i_4 += 1) {
-            if (rootProperties[i_4].type === 'source' && rootProperties[i_4].layer.source === sourceData.source) {
+        for (var i = 0; i < rootProperties.length; i += 1) {
+            if (rootProperties[i].type === 'source' && rootProperties[i].layer.source === sourceData.source) {
                 var prop = {
                     t: propType.Asset,
                     p: bm_generalUtils.cloneObject(savingData, true),
                 };
                 prop.p.fileId = undefined;
-                exportedProps[rootProperties[i_4].id] = prop;
-                return rootProperties[i_4].id;
+                exportedProps[rootProperties[i].id] = prop;
+                return rootProperties[i].id;
             }
         }
         return '';
@@ -11638,21 +12086,21 @@
             importTemplateProject();
             var comp = templateProject.item(1);
             var renderQueueItems = app.project.renderQueue.items;
-            var i_1;
+            var i = void 0;
             var templateRenderItem = void 0;
-            for (i_1 = 0; i_1 < renderQueueItems.length; i_1 += 1) {
-                templateRenderItem = renderQueueItems[i_1 + 1];
+            for (i = 0; i < renderQueueItems.length; i += 1) {
+                templateRenderItem = renderQueueItems[i + 1];
                 if (templateRenderItem.comp.name === comp.name) {
                     var outputModule = getOutputModule(templateRenderItem, templateName);
                     outputModule.saveAsTemplate(outputModule.name);
                     break;
                 }
             }
-            for (i_1 = 0; i_1 < renderQueueItems.length; i_1 += 1) {
-                templateRenderItem = renderQueueItems[i_1 + 1];
+            for (i = 0; i < renderQueueItems.length; i += 1) {
+                templateRenderItem = renderQueueItems[i + 1];
                 if (templateRenderItem.comp === comp) {
                     templateRenderItem.remove();
-                    i_1 -= 1;
+                    i -= 1;
                 }
             }
         }
@@ -11670,8 +12118,8 @@
     function applyTemplateToModule(outputModule, templateName, comp) {
         var installedTemplates = outputModule.templates;
         var isTemplateInstalled = false;
-        for (var i_2 = 0; i_2 < installedTemplates.length; i_2 += 1) {
-            if (installedTemplates[i_2] === templateName) {
+        for (var i = 0; i < installedTemplates.length; i += 1) {
+            if (installedTemplates[i] === templateName) {
                 isTemplateInstalled = true;
                 break;
             }
@@ -12027,14 +12475,14 @@
         if (layerOb.compId) {
             var totalFrames = Math.round(layerInfo.source.duration / layerInfo.source.frameDuration);
             var sequenceIds = sourceHelper.addImageSequenceStills(layerInfo, totalFrames);
-            var i_1;
+            var i = void 0;
             var layers = [];
-            for (i_1 = 0; i_1 < totalFrames; i_1 += 1) {
-                var duration = i_1 === totalFrames - 1 ? 2 : 1;
+            for (i = 0; i < totalFrames; i += 1) {
+                var duration = i === totalFrames - 1 ? 2 : 1;
                 layers.push({
                     ty: layerTypes.still,
                     sc: "#00ffff",
-                    refId: sequenceIds[i_1],
+                    refId: sequenceIds[i],
                     ks: {
                         p: { a: 0, k: [0, 0] },
                         a: { a: 0, k: [0, 0] },
@@ -12042,9 +12490,9 @@
                         r: { a: 0, k: [0] },
                         o: { a: 0, k: [100] },
                     },
-                    ip: Math.round(1000 * i_1 / 1) / 1000,
-                    st: Math.round(1000 * i_1 / 1) / 1000,
-                    op: Math.round(1000 * (i_1 + duration) / 1) / 1000,
+                    ip: Math.round(1000 * i / 1) / 1000,
+                    st: Math.round(1000 * i / 1) / 1000,
+                    op: Math.round(1000 * (i + duration) / 1) / 1000,
                     sr: 1,
                     bm: 0,
                 });
@@ -12199,9 +12647,9 @@
         var comp = getActiveComp();
         if (comp) {
             var selectedLayers = comp.selectedLayers;
-            var i_1 = 0;
-            for (i_1 = 0; i_1 < selectedLayers.length; i_1 += 1) {
-                var layer = selectedLayers[i_1];
+            var i = 0;
+            for (i = 0; i < selectedLayers.length; i += 1) {
+                var layer = selectedLayers[i];
                 try {
                     for (var j = 0; j < layer.selectedProperties.length; j += 1) {
                         props.push({
@@ -13288,39 +13736,6 @@
         browseFile: browseFile,
         browseFolder: browseFolder,
     };
-
-    $.__bodymovin = { esprima: {} };
-    if (!Function.prototype.bm_bind)
-        (function () {
-            var slice = Array.prototype.slice;
-            Function.prototype.bm_bind = function () {
-                var thatFunc = this;
-                var thatArg = arguments[0];
-                var args = slice.call(arguments, 1);
-                if (typeof thatFunc !== 'function') {
-                    throw new TypeError('Function.prototype.bm_bind - ' +
-                        'what is trying to be bound is not callable');
-                }
-                return function () {
-                    var funcArgs = args.concat(slice.call(arguments));
-                    return thatFunc.apply(thatArg, funcArgs);
-                };
-            };
-        })();
-    var globalVariables = ['bm_eventDispatcher', 'bm_generalUtils', 'bm_expressionHelper', 'esprima', 'escodegen',
-        'bez', 'PropertyFactory', 'bm_keyframeHelper', 'bm_transformHelper', 'bm_maskHelper', 'bm_timeremapHelper',
-        'bm_effectsHelper', 'bm_layerStylesHelper', 'bm_cameraHelper', 'bm_XMPHelper', 'bm_ProjectHelper', 'bm_markerHelper',
-        'bm_textHelper', 'bm_boundingBox', 'bm_layerElement', 'bm_projectManager', 'bm_compsManager', 'bm_dataManager',
-        'bm_renderManager', 'bm_downloadManager', 'bm_sourceHelper', 'bm_shapeHelper', 'bm_textAnimatorHelper',
-        'bm_textShapeHelper', 'bm_essentialPropertiesHelper', 'bm_settingsHelper'];
-    var i;
-    var len = globalVariables.length;
-    for (i = 0; i < len; i += 1) {
-        if (undefined[globalVariables[i]]) {
-            undefined[globalVariables[i]] = null;
-            delete undefined[globalVariables[i]];
-        }
-    }
 
     $.__bodymovin = { esprima: {} };
     if (!Function.prototype.bm_bind) {

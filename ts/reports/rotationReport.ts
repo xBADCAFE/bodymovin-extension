@@ -1,14 +1,13 @@
+import { bm_generalUtils as generalUtils } from '../utils/generalUtils';
+import { bm_messageClassReport as MessageClass } from './messageClassReport';
+
 function Rotation(this: any, transform: any, isThreeD: any): void {
   this.transform = transform;
   this.isThreeDimensional = isThreeD;
   this.process();
 }
 
-(function (): void {
-  const generalUtils = $.__bodymovin.bm_generalUtils;
-  const MessageClass = $.__bodymovin.bm_messageClassReport;
-  generalUtils.extendPrototype(Rotation, MessageClass);
-})();
+generalUtils.extendPrototype(Rotation, MessageClass);
 
 Rotation.prototype.processExpressions = function (): void {
 };

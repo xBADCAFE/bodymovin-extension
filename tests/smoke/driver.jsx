@@ -7,9 +7,16 @@
 // bundle's own JSON polyfill fails to load.
 
 (function () {
+  function isoTimestamp() {
+    var d = new Date();
+    function p(n) { return n < 10 ? '0' + n : '' + n; }
+    return d.getUTCFullYear() + '-' + p(d.getUTCMonth() + 1) + '-' + p(d.getUTCDate())
+      + 'T' + p(d.getUTCHours()) + ':' + p(d.getUTCMinutes()) + ':' + p(d.getUTCSeconds()) + 'Z';
+  }
+
   var startMs = new Date().getTime();
   var report = {
-    timestamp: new Date().toISOString(),
+    timestamp: isoTimestamp(),
     bundle_loaded: false,
     polyfills_loaded: { JSON: false, esprima: false, escodegen: false },
     namespace_key_count: 0,
@@ -82,20 +89,27 @@
     var esprimaFile = new File(vendoredDir + '/esprima.jsx');
     if (esprimaFile.exists) {
       $.evalFile(esprimaFile.fsName);
-      report.polyfills_loaded.esprima = !!($.__bodymovin.esprima && Object.keys($.__bodymovin.esprima).length > 0);
-    }
-    var escodegenFile = new File(vendoredDir + '/escodegen.jsx');
-    if (escodegenFile.exists) {
-      $.evalFile(escodegenFile.fsName);
-      report.polyfills_loaded.escodegen = (typeof escodegen !== 'undefined');
+      var esprimaKeyCount = 0;
+      if ($.__bodymovin.esprima) {
+        for (var ek in $.__bodymovin.esprima) {
+          if ($.__bodymovin.esprima.hasOwnProperty(ek)) esprimaKeyCount++;
+        }
+      }
+      report.polyfills_loaded.esprima = esprimaKeyCount > 0;
     }
 
-    // The TS bundle itself
+    // The TS bundle — must load BEFORE escodegen (escodegen mutates bm_expressionHelper)
     if (!bundleFile.exists) {
       report.exception = 'Bundle missing at ' + bundleFile.fsName;
     } else {
       $.evalFile(bundleFile.fsName);
       report.bundle_loaded = true;
+    }
+
+    var escodegenFile = new File(vendoredDir + '/escodegen.jsx');
+    if (escodegenFile.exists) {
+      $.evalFile(escodegenFile.fsName);
+      report.polyfills_loaded.escodegen = !!($.__bodymovin.bm_expressionHelper && $.__bodymovin.bm_expressionHelper.escodegen);
     }
 
     // Enumerate everything attached to $.__bodymovin

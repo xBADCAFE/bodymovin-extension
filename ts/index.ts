@@ -1,5 +1,9 @@
 // Imports (rollup hoists these; their side-effects run before the code below)
 
+// Polyfills MUST come first — patches Array/Object/String/Math prototypes
+// for ES3-flavored ExtendScript before any other module runs.
+import './core/polyfills';
+
 // Event manager
 import { bm_eventDispatcher } from './eventManager';
 

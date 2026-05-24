@@ -35,13 +35,12 @@ if [ ! -f "$REPO_ROOT/bundle/jsx-ts/bodymovin.bundle.jsx" ]; then
 fi
 
 # --- Run driver in AE
+# AE's DoScript doesn't reliably accept POSIX file refs in modern versions.
+# Wrap the driver in a tiny evalFile bootstrap (avoids inlining 6KB into AppleScript).
 echo "==> Running driver.jsx in $AE_APP"
-osascript - <<EOF
-tell application "$AE_APP"
-  activate
-  DoScript file (POSIX file "$DRIVER")
-end tell
-EOF
+BOOTSTRAP="(function(){ \$.evalFile(new File('$DRIVER')); })();"
+osascript -e "tell application \"$AE_APP\" to activate" \
+          -e "tell application \"$AE_APP\" to DoScript \"$BOOTSTRAP\""
 
 # --- Wait for report (DoScript is fire-and-forget; driver writes the file)
 echo "==> Waiting for smoke-report.json (timeout ${TIMEOUT_SECS}s)"
