@@ -26,6 +26,8 @@
     timestamp: isoTimestamp(),
     bundle_kind: null,
     bundle_loaded: false,
+    bundle_signature: null,
+    bundle_render_fn_len: 0,
     project_opened: false,
     comp_found: false,
     comp_name: null,
@@ -77,6 +79,18 @@
       $.evalFile(vendoredDir + '/escodegen.jsx');
     }
     report.bundle_loaded = !!($.__bodymovin && $.__bodymovin.bm_compsManager);
+
+    // Fingerprint the loaded code to prove which bundle actually ran.
+    // toString() returns the source text of the function. The original
+    // .jsx and the rollup-compiled bundle have very different source
+    // shapes (variable naming, comments stripped, IIFE collapsing, etc.),
+    // so this string differs noticeably between paths.
+    if ($.__bodymovin && $.__bodymovin.bm_renderManager && $.__bodymovin.bm_renderManager.render) {
+      var renderFnSrc = $.__bodymovin.bm_renderManager.render.toString();
+      report.bundle_render_fn_len = renderFnSrc.length;
+      // First 200 chars as a quick visual signature.
+      report.bundle_signature = renderFnSrc.substring(0, 200);
+    }
 
     // Locate corpus
     var corpusPath = $.global._BM_CORPUS_AEP;
