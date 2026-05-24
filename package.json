@@ -94,6 +94,7 @@
     "build": "gulp create-bm-extension-player && node scripts/build.js && gulp copy-extension-bundle",
     "build:ts": "rollup -c rollup.config.mjs",
     "typecheck": "tsc --noEmit -p tsconfig.json",
+    "smoke": "tests/smoke/run.sh",
     "test": "node scripts/test.js --env=jsdom"
   },
   "jest": {

@@ -4,12 +4,13 @@ Tracking remaining work on the TS port (`ts-port` branch).
 
 ## Now — blocks everything else
 
-- [ ] **Phase 1.5: test harness** (Task #9)
+- [x] **Smoke test** — `npm run smoke` drives AE via osascript, loads the TS bundle, asserts the `$.__bodymovin.*` namespace surface. Verifies the bundle is loadable end-to-end but doesn't run an actual export. Mac-only, AE 2024+ required.
+- [ ] **Full test harness** (Task #9) — beyond smoke:
   - Build `.aep` corpus (covers shapes, text, expressions, masks, track mattes, image layers, precomps, audio)
   - `aerender` runner that drives the current JS bundle on the corpus and snapshots Lottie JSON output (baseline)
-  - Same runner against the TS bundle (`bundle/jsx-ts/bodymovin.bundle.jsx`) → diff vs baseline
+  - Same runner against the TS bundle → diff vs baseline
   - Lottie-aware semantic diff: sorted keys, float tolerance (~1e-6, configurable per field), generated-ID normalization, "acceptable diff" allowlist
-  - Without this, none of the port is verified
+  - Without this, behavior parity isn't verified
 
 ## Soon — enables Phase 2
 
