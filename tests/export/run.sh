@@ -46,11 +46,10 @@ echo "    Corpus: $CORPUS_AEP"
 echo "    Comp:   $TARGET_COMP"
 echo "    Bundle: $([ "$USE_JS_BUNDLE" = "1" ] && echo "JS (original)" || echo "TS (ported)")"
 
-# Set env vars in the AE process so $.getenv() in driver.jsx can read them.
-# (osascript inherits parent env; AE forks from there.)
-export CORPUS_AEP TARGET_COMP USE_JS_BUNDLE
-
-BOOTSTRAP="(function(){ \$.evalFile(new File('$DRIVER')); })();"
+# osascript-spawned AE doesn't inherit our shell env, so $.getenv() returns
+# nothing inside the driver. Plant the values on $.global before evalFile-ing
+# the driver; driver reads them off $.global instead of $.getenv.
+BOOTSTRAP="\$.global._BM_USE_JS_BUNDLE='$USE_JS_BUNDLE'; \$.global._BM_CORPUS_AEP='$CORPUS_AEP'; \$.global._BM_TARGET_COMP='$TARGET_COMP'; \$.evalFile(new File('$DRIVER'));"
 osascript -e "tell application \"$AE_APP\" to activate" \
           -e "tell application \"$AE_APP\" to DoScript \"$BOOTSTRAP\""
 

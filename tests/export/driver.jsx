@@ -58,7 +58,7 @@
     var repoRoot = scriptFile.parent.parent.parent;
     var vendoredDir = repoRoot.fsName + '/bundle/jsx';
 
-    var useJsBundle = $.getenv('USE_JS_BUNDLE') === '1';
+    var useJsBundle = $.global._BM_USE_JS_BUNDLE === '1';
     report.bundle_kind = useJsBundle ? 'js' : 'ts';
 
     if (useJsBundle) {
@@ -79,7 +79,7 @@
     report.bundle_loaded = !!($.__bodymovin && $.__bodymovin.bm_compsManager);
 
     // Locate corpus
-    var corpusPath = $.getenv('CORPUS_AEP');
+    var corpusPath = $.global._BM_CORPUS_AEP;
     if (!corpusPath) {
       report.exception = 'CORPUS_AEP env var not set';
       writeReport();
@@ -96,7 +96,7 @@
     report.project_opened = true;
 
     // Find target comp by name
-    var targetCompName = $.getenv('TARGET_COMP') || 'Bm_fontAnim';
+    var targetCompName = $.global._BM_TARGET_COMP || 'Bm_fontAnim';
     report.comp_name = targetCompName;
     var targetComp = null;
     var i;
