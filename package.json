@@ -4,6 +4,7 @@
   "private": true,
   "homepage": ".",
   "devDependencies": {
+    "@rollup/plugin-typescript": "^12.3.0",
     "autoprefixer": "6.5.1",
     "babel-core": "6.17.0",
     "babel-eslint": "7.1.1",
@@ -52,8 +53,12 @@
     "promise": "7.1.1",
     "react-dev-utils": "^0.4.2",
     "recursive-readdir": "2.1.0",
+    "rollup": "^4.60.4",
     "strip-ansi": "3.0.1",
     "style-loader": "0.13.1",
+    "tslib": "^2.8.1",
+    "types-for-adobe": "^7.2.5",
+    "typescript": "^5.9.3",
     "url-loader": "0.5.7",
     "webpack": "1.14.0",
     "webpack-dev-server": "1.16.2",
@@ -87,6 +92,8 @@
     "start-dev": "concurrently --kill-others \"node scripts/start.js\" \"gulp watch-extension\"",
     "watch-gulp": "gulp watch-extension",
     "build": "gulp create-bm-extension-player && node scripts/build.js && gulp copy-extension-bundle",
+    "build:ts": "rollup -c rollup.config.mjs",
+    "typecheck": "tsc --noEmit -p tsconfig.json",
     "test": "node scripts/test.js --env=jsdom"
   },
   "jest": {
