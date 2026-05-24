@@ -169,6 +169,7 @@ function exportLayerIndexControl(effect: any, frameRate: number, stretch: number
 function exportMaskIndexControl(effect: any, frameRate: number, stretch: number): any {
   const bm_keyframeHelper = $.__bodymovin.bm_keyframeHelper;
   const ob: any = {};
+  // TODO: fix original bug once testing — emits ty: layerIndex (10) instead of maskIndex (11). Preserved verbatim from bundle/jsx/utils/effectsHelper.jsx.
   ob.ty = effectTypes.layerIndex;
   ob.nm = effect.name;
   ob.mn = effect.matchName;
@@ -557,6 +558,7 @@ function exportCustomEffect(elem: any, effectType: any, frameRate: number, stret
         ob.ef.push(exportColorControl(prop, frameRate, stretch));
       } else if (type === effectTypes.dropDownControl) {
         ob.ef.push(exportDropDownControl(prop, frameRate, stretch));
+        // TODO: fix original bug once testing — duplicate dropDownControl branch; second condition was likely intended to be angleControl or checkboxControl. Preserved verbatim from bundle/jsx/utils/effectsHelper.jsx.
       } else if (type === effectTypes.dropDownControl) {
         ob.ef.push(exportDropDownControl(prop, frameRate, stretch));
       } else if (type === effectTypes.customValue) {
