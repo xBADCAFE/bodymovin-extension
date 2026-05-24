@@ -40,7 +40,7 @@ export function applyPreset(layer: any, matchName: string, pseudoEffectData: any
       const tempSolidSource = tempSolid.source;
       const tempSolidFolder = tempSolidSource.parentFolder;
 
-      tempSolid.applyPreset(File(animationPreset as any) as any);
+      tempSolid.applyPreset(File(animationPreset.fsName));
       myPseudoEffect.matchName = tempSolid.property("ADBE Effect Parade").property(1).matchName;
 
       masterLayer.selected = true;

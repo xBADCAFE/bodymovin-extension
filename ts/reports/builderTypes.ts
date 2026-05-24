@@ -14,6 +14,7 @@ export const bm_reportBuilderTypes = {
   LARGE_IMAGE: 'large image',
   ILLUSTRATOR_ASSET: 'illustrator asset',
   CAMERA_LAYER: 'camera layer',
+  LIGHT_LAYER: 'light layer',
   AUDIO_LAYER: 'audio layer',
   IMAGE_LAYER: 'image layer',
   FAILED_LAYER: 'failed layer',

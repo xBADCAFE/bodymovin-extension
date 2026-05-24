@@ -1102,7 +1102,7 @@
                 var tempSolid = curentComp.layers.addSolid([0, 0, 0], "Temp Solid", 10, 10, 1);
                 var tempSolidSource = tempSolid.source;
                 var tempSolidFolder = tempSolidSource.parentFolder;
-                tempSolid.applyPreset(File(animationPreset));
+                tempSolid.applyPreset(File(animationPreset.fsName));
                 myPseudoEffect.matchName = tempSolid.property("ADBE Effect Parade").property(1).matchName;
                 masterLayer.selected = true;
                 try {
@@ -2623,6 +2623,7 @@
         LARGE_IMAGE: 'large image',
         ILLUSTRATOR_ASSET: 'illustrator asset',
         CAMERA_LAYER: 'camera layer',
+        LIGHT_LAYER: 'light layer',
         AUDIO_LAYER: 'audio layer',
         IMAGE_LAYER: 'image layer',
         FAILED_LAYER: 'failed layer',

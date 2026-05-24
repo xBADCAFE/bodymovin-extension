@@ -21,7 +21,7 @@ LightLayer.prototype.processType = function (): void {
       rendererTypes.ANDROID,
       rendererTypes.SKOTTIE,
     ],
-    (builderTypes as any).LIGHT_LAYER);
+    builderTypes.LIGHT_LAYER);
 };
 
 LightLayer.prototype.process = function (): void {
