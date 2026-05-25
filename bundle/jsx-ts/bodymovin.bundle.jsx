@@ -1667,7 +1667,7 @@
     function set$1(data) {
         _settings = data;
     }
-    function get$1() {
+    function get$2() {
         return _settings;
     }
     function shouldCompressImages() {
@@ -1759,7 +1759,7 @@
     }
     var bm_settingsHelper = {
         set: set$1,
-        get: get$1,
+        get: get$2,
         shouldCompressImages: shouldCompressImages,
         getCompressionQuality: getCompressionQuality,
         shouldEncodeImages: shouldEncodeImages,
@@ -1839,10 +1839,10 @@
     var version_number = '4.8.0';
     function set(data) {
     }
-    function get() {
+    function get$1() {
         return version_number;
     }
-    var bm_versionHelper = { set: set, get: get };
+    var bm_versionHelper = { set: set, get: get$1 };
 
     var completeCallback;
     var compCount = 0;
@@ -2052,14 +2052,14 @@
         layerData.bm = bm_blendModes.getBlendMode(layerInfo.blendingMode);
         completeCallback();
     }
-    function reset$9() {
+    function reset$a() {
         compCount = 0;
     }
     var bm_layerElement = {
         prepareLayer: prepareLayer,
         checkLayerSource: checkLayerSource,
         renderLayer: renderLayer,
-        reset: reset$9,
+        reset: reset$a,
     };
 
     var mainFolder;
@@ -2076,37 +2076,37 @@
             element: element,
         };
     }
-    function createFolder(name) {
+    function createFolder$1(name) {
         name = name || 'Imported_Lottie_Animation';
         mainFolder = app.project.items.addFolder(name);
     }
-    function createComp(name, width, height, duration, id) {
+    function createComp$1(name, width, height, duration, id) {
         name = name || 'Lottie_Main_Comp';
         var comp = app.project.items.addComp(name, width, height, 1, duration / frameRate$1, frameRate$1);
         addElement(id, comp);
         comp.parentFolder = mainFolder;
     }
-    function setCompWorkArea(inPoint, outPoint, id) {
+    function setCompWorkArea$1(inPoint, outPoint, id) {
         var destComp = getElementById(id);
         destComp.workAreaStart = inPoint;
         destComp.workAreaDuration = Math.max(0.1, outPoint - inPoint);
     }
-    function createNull(duration, elementId, parentCompId) {
+    function createNull$1(duration, elementId, parentCompId) {
         var comp = getElementById(parentCompId);
         var element = comp.layers.addNull(duration / frameRate$1);
         addElement(elementId, element);
     }
-    function createSolid(color, name, width, height, duration, elementId, parentCompId) {
+    function createSolid$1(color, name, width, height, duration, elementId, parentCompId) {
         var comp = getElementById(parentCompId);
         var element = comp.layers.addSolid(color, name, width, height, 1, duration / frameRate$1);
         addElement(elementId, element);
     }
-    function createShapeLayer(elementId, parentCompId) {
+    function createShapeLayer$1(elementId, parentCompId) {
         var comp = getElementById(parentCompId);
         var element = comp.layers.addShape();
         addElement(elementId, element);
     }
-    function createTextLayer(elementId, parentCompId) {
+    function createTextLayer$1(elementId, parentCompId) {
         var comp = getElementById(parentCompId);
         var element = comp.layers.addText('');
         addElement(elementId, element);
@@ -2123,7 +2123,7 @@
         var imageLayer = parentComp.layers.add(image);
         addElement(elementId, imageLayer);
     }
-    function setFrameRate(value) {
+    function setFrameRate$1(value) {
         frameRate$1 = value;
     }
     function setElementTemporalKeyAtIndex(propertyName, index, inInfluences, inSpeeds, outInfluences, outSpeeds, elementId) {
@@ -2373,7 +2373,7 @@
     function getTrackMatteMode(mode) {
         return trackMatteModes[mode] || trackMatteModes[1];
     }
-    function createMask(maskId, layerId, maskMode, isInverted) {
+    function createMask$1(maskId, layerId, maskMode, isInverted) {
         var element = getElementById(layerId);
         var mask = element.Masks.addProperty("Mask");
         addElement(maskId, mask);
@@ -2399,7 +2399,7 @@
         var footage = app.project.importFile(importFileOptions);
         addElement(assetId, footage);
     }
-    function addFootageToMainFolder(footageList) {
+    function addFootageToMainFolder$1(footageList) {
         var i;
         var len = footageList.length;
         for (i = 0; i < len; i += 1) {
@@ -2407,22 +2407,22 @@
             footage.parentFolder = mainFolder;
         }
     }
-    function reset$8() {
+    function reset$9() {
         elements = {};
         mainFolder = null;
     }
     var bm_lottieImporter = {
-        reset: reset$8,
-        createFolder: createFolder,
-        createComp: createComp,
-        setCompWorkArea: setCompWorkArea,
-        createNull: createNull,
-        createSolid: createSolid,
-        createShapeLayer: createShapeLayer,
-        createTextLayer: createTextLayer,
+        reset: reset$9,
+        createFolder: createFolder$1,
+        createComp: createComp$1,
+        setCompWorkArea: setCompWorkArea$1,
+        createNull: createNull$1,
+        createSolid: createSolid$1,
+        createShapeLayer: createShapeLayer$1,
+        createTextLayer: createTextLayer$1,
         addComposition: addComposition,
         addImageLayer: addImageLayer,
-        setFrameRate: setFrameRate,
+        setFrameRate: setFrameRate$1,
         setElementPropertyValue: setElementPropertyValue,
         setElementPropertyExpression: setElementPropertyExpression,
         setElementKey: setElementKey,
@@ -2449,14 +2449,831 @@
         createRepeater: createRepeater,
         createRoundedCorners: createRoundedCorners,
         createTrimPath: createTrimPath,
-        createMask: createMask,
+        createMask: createMask$1,
         setTrackMatte: setTrackMatte,
         assignIdToProp: assignIdToProp,
         importFile: importFile,
-        addFootageToMainFolder: addFootageToMainFolder,
+        addFootageToMainFolder: addFootageToMainFolder$1,
         setTextDocumentValue: setTextDocumentValue,
         setTextDocumentValueAtTime: setTextDocumentValueAtTime,
     };
+
+    function random$1(len) {
+        var length = len;
+        var sequence = 'abcdefghijklmnoqrstuvwxyz1234567890';
+        var returnString = '';
+        var i;
+        for (i = 0; i < length; i += 1) {
+            returnString += sequence.charAt(Math.floor(Math.random() * sequence.length));
+        }
+        return returnString;
+    }
+
+    function hexToRgb(hex) {
+        var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+        return result ? {
+            r: parseInt(result[1], 16),
+            g: parseInt(result[2], 16),
+            b: parseInt(result[3], 16),
+        } : null;
+    }
+    function hexToRgbAsNormalizedArray(hex) {
+        var color = hexToRgb(hex);
+        if (!color) {
+            return [0, 0, 0];
+        }
+        return [color.r / 255, color.g / 255, color.b / 255];
+    }
+
+    var _alerts = [];
+    var _compsStack = [];
+    var _currentLayer = '';
+    function add(message) {
+        var entry = {};
+        var key;
+        for (key in message) {
+            if (message.hasOwnProperty(key)) {
+                entry[key] = message[key];
+            }
+        }
+        entry.layer = _currentLayer;
+        entry.comp = _compsStack.length ? _compsStack[_compsStack.length - 1] : '';
+        _alerts.push(entry);
+    }
+    function get() {
+        var copy = [];
+        var i;
+        for (i = 0; i < _alerts.length; i += 1) {
+            copy.push(_alerts[i]);
+        }
+        return copy;
+    }
+    function reset$8() {
+        _alerts.length = 0;
+        _compsStack.length = 0;
+        _currentLayer = '';
+    }
+    function setLayer(name) {
+        _currentLayer = name;
+    }
+    function pushComp(name) {
+        _compsStack.push(name);
+    }
+    function popComp(_name) {
+        _compsStack.pop();
+    }
+
+    var _frameRate = 0;
+    function setFrameRate(value) {
+        _frameRate = value;
+    }
+    function getFrameRate() {
+        return _frameRate;
+    }
+
+    function formatProperty(property) {
+        if (Array.isArray(property) && typeof property[0] === 'object' && property[0] && 'i' in property[0]) {
+            return property[0];
+        }
+        return property;
+    }
+    function addKeyframes(keyframes, propertyName, elementId) {
+        keyframes.forEach(function (keyframe, index) {
+            var value = 's' in keyframe ? keyframe.s : keyframes[index - 1].e;
+            bm_lottieImporter.setElementKey(propertyName, keyframe.t, formatProperty(value), elementId);
+        });
+        var inSpeeds = [];
+        var inInfluences = [];
+        var outSpeeds = [];
+        var outInfluences = [];
+        var totalDimensions = keyframes[0].i
+            ? (Array.isArray(keyframes[0].i.x) ? keyframes[0].i.x.length : 1)
+            : keyframes[0].s.length;
+        keyframes.forEach(function (keyframe, index) {
+            if (keyframe.i && keyframe.o && index < keyframes.length - 1) {
+                outSpeeds[index] = [];
+                outInfluences[index] = [];
+                inSpeeds[index + 1] = [];
+                inInfluences[index + 1] = [];
+                var inX = Array.isArray(keyframe.i.x) ? keyframe.i.x : [keyframe.i.x];
+                inX.forEach(function (_arrayElement, dimension) {
+                    var nextValue = 'e' in keyframe ? keyframe.e : keyframes[index + 1].s;
+                    var inXDimension = Array.isArray(keyframe.i.x) ? keyframe.i.x[dimension] : keyframe.i.x;
+                    var inYDimension = Array.isArray(keyframe.i.y) ? keyframe.i.y[dimension] : keyframe.i.y;
+                    var outXDimension = Array.isArray(keyframe.o.x) ? keyframe.o.x[dimension] : keyframe.o.x;
+                    var outYDimension = Array.isArray(keyframe.o.y) ? keyframe.o.y[dimension] : keyframe.o.y;
+                    var nextKeyframe = keyframes[index + 1];
+                    var keyInInfluence = (inXDimension - 1) * -100;
+                    var lastKeyOutInfluence = (outXDimension) * 100;
+                    var duration = (nextKeyframe.t - keyframe.t) / getFrameRate();
+                    var yNormal = nextValue[dimension] - keyframe.s[dimension];
+                    var bezierInY = -(inYDimension - 1) * yNormal / duration;
+                    var bezierY = outYDimension * yNormal / duration;
+                    var lastKeyOutSpeed = bezierY / lastKeyOutInfluence * 100;
+                    var keyInSpeed = bezierInY / keyInInfluence * 100;
+                    outSpeeds[index].push(lastKeyOutSpeed);
+                    outInfluences[index].push(lastKeyOutInfluence);
+                    inSpeeds[index + 1].push(keyInSpeed);
+                    inInfluences[index + 1].push(keyInInfluence);
+                });
+            }
+        });
+        var fillingArray = [];
+        var f;
+        for (f = 0; f < totalDimensions; f += 1) {
+            fillingArray.push(1);
+        }
+        inSpeeds[0] = fillingArray;
+        inInfluences[0] = fillingArray;
+        outSpeeds.push(fillingArray);
+        outInfluences.push(fillingArray);
+        inSpeeds.forEach(function (_easing, index) {
+            bm_lottieImporter.setElementTemporalKeyAtIndex(propertyName, index + 1, inInfluences[index], inSpeeds[index], outInfluences[index], outSpeeds[index], elementId);
+        });
+        keyframes.forEach(function (keyframe, index) {
+            if (keyframe.h) {
+                bm_lottieImporter.setInterpolationTypeAtKey(propertyName, index + 1, elementId, 3);
+            }
+            if (keyframe.to || (index > 0 && keyframes[index - 1].to)) {
+                var outTangents = (index === keyframes.length - 1)
+                    ? keyframes[index - 1].to.map(function (_value) { return 0; })
+                    : keyframe.to;
+                var inTangents = (index === 0)
+                    ? keyframe.ti.map(function (_value) { return 0; })
+                    : keyframes[index - 1].ti;
+                bm_lottieImporter.setSpatialTangentsAtKey(propertyName, index + 1, inTangents, outTangents, elementId);
+            }
+        });
+    }
+    function formatExpression(expression) {
+        expression = expression
+            .replace(/\$bm_sum/g, 'add')
+            .replace(/\$bm_sub/g, 'sub')
+            .replace(/\$bm_mul/g, 'mul')
+            .replace(/\$bm_div/g, 'div')
+            .replace(/\$bm_mod/g, 'mod')
+            .replace(/ sum\(/g, ' add(');
+        return encodeURIComponent(expression);
+    }
+    function processProperty(propertyName, propertyData, elementId, defaultValue) {
+        if (typeof propertyData === 'number' || typeof propertyData === 'string') {
+            bm_lottieImporter.setElementPropertyValue(propertyName, propertyData, elementId);
+        }
+        else if (propertyData) {
+            if ('k' in propertyData) {
+                if (typeof propertyData.k === 'number' || !Array.isArray(propertyData.k)) {
+                    if (defaultValue !== propertyData.k) {
+                        bm_lottieImporter.setElementPropertyValue(propertyName, formatProperty(propertyData.k), elementId);
+                    }
+                }
+                else if (Array.isArray(propertyData.k) && typeof propertyData.k[0] === 'number') {
+                    var differentIndex = propertyData.k.findIndex(function (value, index) {
+                        return defaultValue === undefined || defaultValue[index] !== value;
+                    });
+                    if (differentIndex !== -1) {
+                        bm_lottieImporter.setElementPropertyValue(propertyName, propertyData.k, elementId);
+                    }
+                }
+                else {
+                    addKeyframes(propertyData.k, propertyName, elementId);
+                }
+            }
+            if ('x' in propertyData) {
+                bm_lottieImporter.setElementPropertyExpression(propertyName, formatExpression(propertyData.x), elementId);
+            }
+        }
+    }
+
+    function processTransform(transformData, elementId) {
+        var transformId = random$1(10);
+        bm_lottieImporter.assignIdToProp('transform', transformId, elementId);
+        if (transformData.p) {
+            if (transformData.p.s) {
+                bm_lottieImporter.separateDimensions(elementId);
+                processProperty('ADBE Position_0', transformData.p.x, transformId);
+                processProperty('ADBE Position_1', transformData.p.y, transformId);
+                if (transformData.p.z) {
+                    processProperty('ADBE Position_2', transformData.p.z, transformId);
+                }
+            }
+            else {
+                processProperty('Position', transformData.p, transformId);
+            }
+        }
+        if (transformData.r) {
+            processProperty('Rotation', transformData.r, transformId, 0);
+        }
+        if (transformData.rx) {
+            processProperty('ADBE Rotate X', transformData.rx, transformId, 0);
+        }
+        if (transformData.ry) {
+            processProperty('ADBE Rotate Y', transformData.ry, transformId, 0);
+        }
+        if (transformData.rz) {
+            processProperty('ADBE Rotate Z', transformData.rz, transformId, 0);
+        }
+        if (transformData.s) {
+            processProperty('Scale', transformData.s, transformId, [100, 100]);
+        }
+        if (transformData.a) {
+            processProperty('Anchor Point', transformData.a, transformId);
+        }
+        if (transformData.o) {
+            processProperty('Opacity', transformData.o, transformId);
+        }
+        if (transformData.so) {
+            processProperty('Start Opacity', transformData.so, transformId);
+        }
+        if (transformData.eo) {
+            processProperty('End Opacity', transformData.eo, transformId);
+        }
+        if (transformData.sk) {
+            processProperty('Skew', transformData.sk, transformId, 0);
+        }
+        if (transformData.sa) {
+            processProperty('Skew Axis', transformData.sa, transformId, 0);
+        }
+    }
+
+    function getKeyframes(gradientKeys) {
+        if (typeof gradientKeys[0] === 'number') {
+            return [{
+                    s: gradientKeys,
+                }];
+        }
+        return gradientKeys;
+    }
+    function buildGradientKeyframes(gradientData) {
+        var totalPositions = gradientData.p;
+        var colors = [];
+        var alphas = [];
+        var keyframes = getKeyframes(gradientData.k.k);
+        keyframes.forEach(function (gradient) {
+            var gradientValue = gradient.s;
+            var hasAlpha = gradientValue.length / 4 !== totalPositions;
+            var colorList = [];
+            var alphaList = [];
+            var count = 0;
+            var index = 0;
+            while (count < totalPositions) {
+                index = count * 4;
+                colorList.push({
+                    p: Math.round(100 * gradientValue[index + 0] * 100) / 100,
+                    r: Math.round(gradientValue[index + 1] * 255 * 100) / 100,
+                    g: Math.round(gradientValue[index + 2] * 255 * 100) / 100,
+                    b: Math.round(gradientValue[index + 3] * 255 * 100) / 100,
+                });
+                count += 1;
+            }
+            colors.push(colorList);
+            if (hasAlpha) {
+                count = 0;
+                var totalAlphaPositions = ((gradientValue.length - (totalPositions * 4)) / 2);
+                index = 0;
+                while (count < totalAlphaPositions) {
+                    index = totalPositions * 4 + count * 2;
+                    alphaList.push({
+                        p: Math.round(100 * gradientValue[index + 0] * 100) / 100,
+                        a: Math.round(gradientValue[index + 1] * 100 * 100) / 100,
+                    });
+                    count += 1;
+                }
+                alphas.push(alphaList);
+            }
+        });
+        return {
+            colors: colors,
+            alphas: alphas,
+        };
+    }
+    function buildGradientAlert(layerData) {
+        return {
+            type: 'gradient',
+            message: "Gradient data can't be imported. You will need to fill it manually.",
+            colorData: buildGradientKeyframes(layerData.g),
+        };
+    }
+
+    function processCommonProperties(data, id) {
+        if (data.hd === true) {
+            bm_lottieImporter.setElementAsDisabled(id);
+        }
+    }
+    function groupHandler(data, parentId) {
+        var groupId = random$1(10);
+        bm_lottieImporter.createShapeGroup(groupId, parentId);
+        processProperty('name', encodeURIComponent(data.nm), groupId);
+        iterateShapes(data.it, groupId);
+        processCommonProperties(data, groupId);
+    }
+    function transformHandler(data, parentId) {
+        processTransform(data, parentId);
+    }
+    function rectangleHandler(data, parentId) {
+        var rectId = random$1(10);
+        bm_lottieImporter.createRectangle(rectId, parentId);
+        processProperty('Size', data.s, rectId, [100, 100]);
+        processProperty('Position', data.p, rectId, [0, 0]);
+        processProperty('Roundness', data.r, rectId, 0);
+        processProperty('name', encodeURIComponent(data.nm), rectId);
+        processCommonProperties(data, rectId);
+    }
+    function fillHandler(data, parentId) {
+        var id = random$1(10);
+        bm_lottieImporter.createFill(id, parentId);
+        processProperty('Color', data.c, id);
+        processProperty('Opacity', data.o, id, 100);
+        processProperty('Fill Rule', data.r, id);
+        processProperty('name', encodeURIComponent(data.nm), id);
+        processCommonProperties(data, id);
+    }
+    function strokeHandler(data, parentId) {
+        var id = random$1(10);
+        bm_lottieImporter.createStroke(id, parentId);
+        processProperty('Color', data.c, id);
+        processProperty('Opacity', data.o, id, 100);
+        processProperty('Stroke Width', data.w, id, 1);
+        processProperty('Line Cap', data.lc, id, 1);
+        processProperty('Line Join', data.lj, id, 1);
+        if (data.lj === 1) {
+            processProperty('Miter Limit', data.ml, id, 4);
+        }
+        processProperty('name', encodeURIComponent(data.nm), id);
+        processCommonProperties(data, id);
+    }
+    function ellipseHandler(data, parentId) {
+        var id = random$1(10);
+        bm_lottieImporter.createEllipse(id, parentId);
+        processProperty('Shape Direction', data.d, id);
+        processProperty('Size', data.s, id, [100, 100]);
+        processProperty('Position', data.p, id, [0, 0]);
+        processProperty('name', encodeURIComponent(data.nm), id);
+        processCommonProperties(data, id);
+    }
+    function starHandler(data, parentId) {
+        var id = random$1(10);
+        bm_lottieImporter.createStar(id, parentId);
+        processProperty('Type', data.sy, id, 1);
+        processProperty('Shape Direction', data.d, id, 1);
+        processProperty('Points', data.pt, id, 5);
+        processProperty('Position', data.p, id, [0, 0]);
+        processProperty('Rotation', data.r, id, 0);
+        if (data.sy === 1) {
+            processProperty('Inner Radius', data.ir, id, 50);
+            processProperty('Inner Roundness', data.is, id, 0);
+        }
+        processProperty('Outer Radius', data.or, id, 100);
+        processProperty('Outer Roundness', data.os, id, 0);
+        processProperty('name', encodeURIComponent(data.nm), id);
+        processCommonProperties(data, id);
+    }
+    function shapeHandler(data, parentId) {
+        var id = random$1(10);
+        bm_lottieImporter.createShape(id, parentId);
+        processProperty('ADBE Vector Shape', data.ks, id, null);
+        processCommonProperties(data, id);
+    }
+    function repeaterHandler(data, parentId) {
+        var id = random$1(10);
+        bm_lottieImporter.createRepeater(id, parentId);
+        processProperty('Copies', data.c, id);
+        processProperty('Offset', data.o, id, 0);
+        processProperty('Composite', data.m, id);
+        processProperty('name', encodeURIComponent(data.nm), id);
+        processTransform(data.tr, id);
+        processCommonProperties(data, id);
+    }
+    function roundedCornersHandler(data, parentId) {
+        var id = random$1(10);
+        bm_lottieImporter.createRoundedCorners(id, parentId);
+        processProperty('Radius', data.r, id);
+        processProperty('name', encodeURIComponent(data.nm), id);
+        processCommonProperties(data, id);
+    }
+    function trimPathHandler(data, parentId) {
+        var id = random$1(10);
+        bm_lottieImporter.createTrimPath(id, parentId);
+        processProperty('Start', data.s, id, 0);
+        processProperty('End', data.e, id, 100);
+        processProperty('Offset', data.o, id, 0);
+        processProperty('Trim Multiple Shapes', data.m, id);
+        processProperty('name', encodeURIComponent(data.nm), id);
+        processCommonProperties(data, id);
+    }
+    function gradientFillHandler(data, parentId) {
+        var id = random$1(10);
+        bm_lottieImporter.createGradientFill(id, parentId);
+        processProperty('Colors', data.g.k, id, 100);
+        processProperty('Opacity', data.o, id, 100);
+        processProperty('Fill Rule', data.r, id, 1);
+        processProperty('Blend Mode', data.bm, id, 0);
+        processProperty('Start Point', data.s, id, [0, 0]);
+        processProperty('End Point', data.e, id, [100, 0]);
+        processProperty('Type', data.t, id, 1);
+        if (data.t === 2) {
+            processProperty('Highlight Length', data.h, id, 0);
+            processProperty('Highlight Angle', data.a, id, 0);
+        }
+        add(buildGradientAlert(data));
+        processProperty('name', data.nm, id);
+        processCommonProperties(data, id);
+    }
+    function gradientStrokeHandler(data, parentId) {
+        var id = random$1(10);
+        bm_lottieImporter.createGradientStroke(id, parentId);
+        processProperty('Colors', data.g.k, id, 100);
+        processProperty('Opacity', data.o, id, 100);
+        processProperty('Stroke Width', data.w, id, 2);
+        processProperty('Fill Rule', data.r, id, 1);
+        processProperty('Blend Mode', data.bm, id, 0);
+        processProperty('Start Point', data.s, id, [0, 0]);
+        processProperty('End Point', data.e, id, [100, 0]);
+        processProperty('Type', data.t, id, 1);
+        if (data.t === 2) {
+            processProperty('Highlight Length', data.h, id, 0);
+            processProperty('Highlight Angle', data.a, id, 0);
+        }
+        processProperty('Line Cap', data.lc, id, 1);
+        processProperty('Line Join', data.lj, id, 1);
+        if (data.lj === 1) {
+            processProperty('Miter Limit', data.ml2, id, 4);
+        }
+        processProperty('name', encodeURIComponent(data.nm), id);
+        processCommonProperties(data, id);
+        add(buildGradientAlert(data));
+    }
+    var shapeHandlers = {
+        gr: groupHandler,
+        rc: rectangleHandler,
+        fl: fillHandler,
+        tr: transformHandler,
+        sh: shapeHandler,
+        st: strokeHandler,
+        el: ellipseHandler,
+        sr: starHandler,
+        rp: repeaterHandler,
+        rd: roundedCornersHandler,
+        tm: trimPathHandler,
+        gf: gradientFillHandler,
+        gs: gradientStrokeHandler,
+    };
+    function iterateShapes(shapes, parentId) {
+        shapes.forEach(function (shape) {
+            if (shapeHandlers[shape.ty]) {
+                shapeHandlers[shape.ty](shape, parentId);
+            }
+        });
+    }
+    function processShape$1(layerData, layerId) {
+        iterateShapes(layerData.shapes, layerId);
+    }
+
+    function getTextDocumentData(textDocumentData) {
+        if ('k' in textDocumentData) {
+            return textDocumentData.k;
+        }
+        return [
+            {
+                s: textDocumentData,
+            },
+        ];
+    }
+    function processText(textData, layerId) {
+        var textDocumentData = getTextDocumentData(textData.d);
+        var sourceTextIdId = random$1(10);
+        bm_lottieImporter.assignIdToProp('Source Text', sourceTextIdId, layerId);
+        if (textDocumentData.length === 1) {
+            var textDocumentValue = textDocumentData[0].s;
+            bm_lottieImporter.setTextDocumentValue(layerId, encodeURIComponent(textDocumentValue.t), textDocumentValue.s, encodeURIComponent(textDocumentValue.f), textDocumentValue.fc, textDocumentValue.tr, textDocumentValue.j, textDocumentValue.ls || 0);
+        }
+        else {
+            textDocumentData.forEach(function (textDocument) {
+                var docValue = textDocument.s;
+                bm_lottieImporter.setTextDocumentValueAtTime(layerId, textDocument.t, encodeURIComponent(docValue.t), docValue.s, encodeURIComponent(docValue.f), docValue.fc, docValue.tr, docValue.j, docValue.ls || 0);
+            });
+        }
+    }
+
+    function createMask(maskData, elementId) {
+        var maskId = random$1(10);
+        bm_lottieImporter.createMask(maskId, elementId, maskData.mode, maskData.inv);
+        processProperty('Mask Opacity', maskData.o, maskId, 100);
+        processProperty('Mask Expansion', maskData.x, maskId, 0);
+        if (maskData.f) {
+            processProperty('Mask Feather', maskData.f, maskId, 0);
+        }
+        processProperty('maskShape', maskData.pt, maskId, null);
+    }
+    function processMasks(masks, elementId) {
+        if (masks && masks.length) {
+            masks.forEach(function (mask) {
+                createMask(mask, elementId);
+            });
+        }
+    }
+
+    var ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/';
+    function decodeBase64ToBinaryString(input) {
+        var str = input.replace(/[^A-Za-z0-9\+\/\=]/g, '');
+        var output = '';
+        var i = 0;
+        var len = str.length;
+        while (i < len) {
+            var enc1 = ALPHABET.indexOf(str.charAt(i++));
+            var enc2 = ALPHABET.indexOf(str.charAt(i++));
+            var enc3 = ALPHABET.indexOf(str.charAt(i++));
+            var enc4 = ALPHABET.indexOf(str.charAt(i++));
+            var chr1 = (enc1 << 2) | (enc2 >> 4);
+            var chr2 = ((enc2 & 15) << 4) | (enc3 >> 2);
+            var chr3 = ((enc3 & 3) << 6) | enc4;
+            output += String.fromCharCode(chr1);
+            if (enc3 !== 64) {
+                output += String.fromCharCode(chr2);
+            }
+            if (enc4 !== 64) {
+                output += String.fromCharCode(chr3);
+            }
+        }
+        return output;
+    }
+
+    var LOTTIE_IMAGES_IMPORT = 'lottie_images_import';
+    function getSeparator() {
+        return ($.os && $.os.indexOf('Windows') !== -1) ? '\\' : '/';
+    }
+    function ensureFolder(path) {
+        var folder = new Folder(path);
+        if (!folder.exists) {
+            return folder.create();
+        }
+        return true;
+    }
+    function getEmbeddedExtension(prefix) {
+        var slashIndex = prefix.indexOf('/');
+        var semiIndex = prefix.indexOf(';');
+        return prefix.substr(slashIndex + 1, semiIndex - slashIndex - 1);
+    }
+    function writeEmbeddedAsset(base64Data, folderPath, assetName) {
+        if (!ensureFolder(folderPath)) {
+            return false;
+        }
+        var filePath = folderPath + assetName;
+        var file = new File(filePath);
+        file.encoding = 'BINARY';
+        if (!file.open('w')) {
+            return false;
+        }
+        try {
+            var binary = decodeBase64ToBinaryString(base64Data);
+            file.write(binary);
+        }
+        finally {
+            file.close();
+        }
+        return true;
+    }
+    function importEmbeddedAsset(asset, assetsPath) {
+        var data = asset.p;
+        if (typeof data !== 'string' || data.indexOf(',') === -1) {
+            return null;
+        }
+        var prefix = data.substr(0, data.indexOf(','));
+        var extension = getEmbeddedExtension(prefix);
+        var base64Data = data.substr(data.indexOf(',') + 1);
+        var assetId = random$1(10);
+        var assetName = assetId + '.' + extension;
+        if (!writeEmbeddedAsset(base64Data, assetsPath, assetName)) {
+            return null;
+        }
+        bm_lottieImporter.importFile(encodeURIComponent(assetsPath), encodeURIComponent(assetName), assetId);
+        return assetId;
+    }
+    function importLinkedAsset(asset, assetsPath) {
+        var assetId = random$1(10);
+        var assetName = (asset.u || '') + asset.p;
+        bm_lottieImporter.importFile(encodeURIComponent(assetsPath), encodeURIComponent(assetName), assetId);
+        return assetId;
+    }
+    function importLottieAssets(assets, assetsPath) {
+        if (!assets) {
+            return;
+        }
+        var imageAssets = assets.filter(function (asset) {
+            return asset.id && asset.w;
+        });
+        var i;
+        for (i = 0; i < imageAssets.length; i += 1) {
+            var asset = imageAssets[i];
+            var sourceId = null;
+            if (asset.e) {
+                var embeddedPath = assetsPath + LOTTIE_IMAGES_IMPORT + getSeparator();
+                sourceId = importEmbeddedAsset(asset, embeddedPath);
+                if (!sourceId) {
+                    add({
+                        type: 'message',
+                        message: 'Embedded asset could not be imported',
+                    });
+                    continue;
+                }
+            }
+            else {
+                if (!assetsPath) {
+                    add({
+                        type: 'message',
+                        message: 'Asset path not provided; skipping linked asset',
+                    });
+                    continue;
+                }
+                sourceId = importLinkedAsset(asset, assetsPath);
+            }
+            asset.__sourceId = sourceId;
+        }
+    }
+
+    function createFolder(name) {
+        bm_lottieImporter.createFolder(name || '');
+    }
+    function createComp(name, width, height, duration, compId) {
+        bm_lottieImporter.createComp(name, width, height, duration, compId);
+    }
+    function setCompWorkArea(inPoint, outPoint, compId) {
+        bm_lottieImporter.setCompWorkArea(inPoint, outPoint, compId);
+    }
+    function createSolid(layerData, compId) {
+        var layerId = random$1(10);
+        layerData.__importId = layerId;
+        var color = hexToRgbAsNormalizedArray(layerData.sc);
+        bm_lottieImporter.createSolid(color, layerData.nm, layerData.sw, layerData.sh, layerData.op - layerData.ip, layerId, compId);
+        processLayerExtraProps(layerData, layerId);
+        processTransform(layerData.ks, layerId);
+        processMasks(layerData.masksProperties, layerId);
+    }
+    function createImageLayer(layerData, compId, assets) {
+        var imageSourceData = assets.find(function (asset) {
+            return asset.id === layerData.refId;
+        });
+        var layerId = random$1(10);
+        layerData.__importId = layerId;
+        if (imageSourceData && imageSourceData.__sourceId) {
+            bm_lottieImporter.addImageLayer(imageSourceData.__sourceId, compId, layerId);
+        }
+        processLayerExtraProps(layerData, layerId);
+        processTransform(layerData.ks, layerId);
+        processMasks(layerData.masksProperties, layerId);
+    }
+    function createNull(layerData, compId) {
+        var layerId = random$1(10);
+        layerData.__importId = layerId;
+        bm_lottieImporter.createNull(layerData.op - layerData.ip, layerId, compId);
+        processLayerExtraProps(layerData, layerId);
+        processTransform(layerData.ks, layerId);
+    }
+    function createShapeLayer(layerData, compId) {
+        var layerId = random$1(10);
+        layerData.__importId = layerId;
+        bm_lottieImporter.createShapeLayer(layerId, compId);
+        processLayerExtraProps(layerData, layerId);
+        processShape$1(layerData, layerId);
+        processTransform(layerData.ks, layerId);
+        processMasks(layerData.masksProperties, layerId);
+    }
+    function createTextLayer(layerData, compId) {
+        var layerId = random$1(10);
+        layerData.__importId = layerId;
+        bm_lottieImporter.createTextLayer(layerId, compId);
+        processLayerExtraProps(layerData, layerId);
+        processText(layerData.t, layerId);
+        processTransform(layerData.ks, layerId);
+        processMasks(layerData.masksProperties, layerId);
+        add({ type: 'message', message: 'Text layers are not fully supported' });
+    }
+    function createCompositionLayer(layerData, parentCompId, assets) {
+        var compositionSourceData = assets.find(function (asset) {
+            return asset.id === layerData.refId;
+        });
+        if (!compositionSourceData) {
+            return;
+        }
+        if (!compositionSourceData.__created) {
+            compositionSourceData.__created = true;
+            var sourceCompId = random$1(10);
+            compositionSourceData.__sourceId = sourceCompId;
+            createComp(layerData.nm, layerData.w, layerData.h, 9999, sourceCompId);
+            pushComp(layerData.nm);
+            iterateLayers(compositionSourceData.layers, sourceCompId, assets);
+            popComp(layerData.nm);
+        }
+        var layerId = random$1(10);
+        layerData.__importId = layerId;
+        bm_lottieImporter.addComposition(compositionSourceData.__sourceId, parentCompId, layerId);
+        processLayerExtraProps(layerData, layerId);
+        processTransform(layerData.ks, layerId);
+        processMasks(layerData.masksProperties, layerId);
+    }
+    function processLayerExtraProps(layerData, layerId) {
+        if (layerData.ip - layerData.st !== 0) {
+            bm_lottieImporter.setLayerInPoint(layerId, layerData.ip - layerData.st);
+        }
+        if (layerData.st !== 0) {
+            bm_lottieImporter.setLayerStartTime(layerId, layerData.st);
+        }
+        if (layerData.sr !== 1) {
+            bm_lottieImporter.setLayerStretch(layerId, layerData.sr * 100);
+        }
+        if (layerData.nm) {
+            bm_lottieImporter.setLayerName(layerId, encodeURIComponent(layerData.nm));
+        }
+        if (layerData.hd === true) {
+            bm_lottieImporter.setElementAsDisabled(layerId);
+        }
+        bm_lottieImporter.setLayerOutPoint(layerId, layerData.op);
+    }
+    function createLayer$1(layerData, compId, assets) {
+        setLayer(layerData.nm);
+        switch (layerData.ty) {
+            case 0:
+                createCompositionLayer(layerData, compId, assets);
+                break;
+            case 1:
+                createSolid(layerData, compId);
+                break;
+            case 2:
+                createImageLayer(layerData, compId, assets);
+                break;
+            case 3:
+                createNull(layerData, compId);
+                break;
+            case 4:
+                createShapeLayer(layerData, compId);
+                break;
+            case 5:
+                createTextLayer(layerData, compId);
+                break;
+        }
+    }
+    function findLayerByIndexProperty(layers, index) {
+        return layers.find(function (layer) {
+            return layer.ind === index;
+        });
+    }
+    function iterateLayers(layers, compId, assets) {
+        layers.reverse().forEach(function (layer) {
+            createLayer$1(layer, compId, assets);
+        });
+        layers.forEach(function (layer) {
+            if ('parent' in layer) {
+                var parentLayer = findLayerByIndexProperty(layers, layer.parent);
+                if (parentLayer) {
+                    bm_lottieImporter.setLayerParent(layer.__importId, parentLayer.__importId);
+                }
+            }
+            if ('tt' in layer) {
+                bm_lottieImporter.setTrackMatte(layer.__importId, layer.tt);
+            }
+        });
+    }
+    function addFootageToMainFolder(assets) {
+        var footageIds = (assets || [])
+            .filter(function (asset) { return asset.id && asset.w && asset.__sourceId; })
+            .map(function (asset) { return asset.__sourceId; });
+        if (footageIds.length) {
+            bm_lottieImporter.addFootageToMainFolder(footageIds);
+        }
+    }
+    function convert(lottieData, mainCompId) {
+        setFrameRate(lottieData.fr);
+        bm_lottieImporter.setFrameRate(lottieData.fr);
+        pushComp(lottieData.nm || 'Main Comp');
+        createFolder(lottieData.nm);
+        addFootageToMainFolder(lottieData.assets);
+        createComp(lottieData.nm, lottieData.w, lottieData.h, lottieData.op, mainCompId);
+        setCompWorkArea(lottieData.ip / lottieData.fr, lottieData.op / lottieData.fr, mainCompId);
+        iterateLayers(lottieData.layers, mainCompId, lottieData.assets);
+    }
+    function importLottieData(lottieData, options) {
+        var assetsPath = (options && options.assetsPath) || '';
+        reset$8();
+        bm_lottieImporter.reset();
+        var mainCompId = random$1(10);
+        try {
+            importLottieAssets(lottieData.assets, assetsPath);
+            convert(lottieData, mainCompId);
+            return {
+                success: true,
+                mainCompId: mainCompId,
+                alerts: get(),
+            };
+        }
+        catch (err) {
+            var message = (err && err.message) ? err.message : 'There has been an error';
+            return {
+                success: false,
+                mainCompId: mainCompId,
+                alerts: get(),
+                error: message,
+            };
+        }
+    }
 
     var _callback$6;
     function saveAVDDataSuccess() {
@@ -12852,7 +13669,8 @@
 
     var _endCallback;
     function initialIdleStatus() {
-        var exporterHelpers = $.__bodymovin.bm_exporterHelpers;
+        var bm = $.__bodymovin;
+        var exporterHelpers = bm && bm.bm_exporterHelpers;
         return exporterHelpers ? exporterHelpers.exportStatuses.IDLE : undefined;
     }
     var results = {
@@ -13737,6 +14555,7 @@
         browseFolder: browseFolder,
     };
 
+    bm_lottieImporter.importLottieData = importLottieData;
     $.__bodymovin = { esprima: {} };
     if (!Function.prototype.bm_bind) {
         (function () {

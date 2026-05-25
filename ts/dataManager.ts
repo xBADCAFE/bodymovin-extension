@@ -1,7 +1,8 @@
 let _endCallback: () => void;
 
 function initialIdleStatus(): any {
-  const exporterHelpers = $.__bodymovin.bm_exporterHelpers;
+  const bm = $.__bodymovin;
+  const exporterHelpers = bm && bm.bm_exporterHelpers;
   return exporterHelpers ? exporterHelpers.exportStatuses.IDLE : undefined;
 }
 

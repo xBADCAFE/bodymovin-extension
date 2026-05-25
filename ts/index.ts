@@ -36,6 +36,8 @@ import { bm_layerElement } from './elements/layerElement';
 
 // Importers
 import { bm_lottieImporter } from './importers/lottieImporter';
+import { importLottieData } from './importers/lottie';
+(bm_lottieImporter as any).importLottieData = importLottieData;
 
 // Exporters
 import { bm_avdExporter } from './exporters/avdExporter';
