@@ -96,6 +96,7 @@
     "typecheck": "tsc --noEmit -p tsconfig.json",
     "smoke": "tests/smoke/run.sh",
     "export-test": "tests/export/run.sh",
+    "roundtrip-test": "tests/roundtrip/run.sh",
     "test": "node scripts/test.js --env=jsdom"
   },
   "jest": {
