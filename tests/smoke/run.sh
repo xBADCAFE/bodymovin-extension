@@ -40,7 +40,7 @@ fi
 echo "==> Running driver.jsx in $AE_APP"
 BOOTSTRAP="(function(){ \$.evalFile(new File('$DRIVER')); })();"
 osascript -e "tell application \"$AE_APP\" to activate" \
-          -e "tell application \"$AE_APP\" to DoScript \"$BOOTSTRAP\""
+          -e "tell application \"$AE_APP\" to DoScript \"$BOOTSTRAP\" with override"
 
 # --- Wait for report (DoScript is fire-and-forget; driver writes the file)
 echo "==> Waiting for smoke-report.json (timeout ${TIMEOUT_SECS}s)"

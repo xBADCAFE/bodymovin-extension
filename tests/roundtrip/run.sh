@@ -38,7 +38,7 @@ echo "    Input:  $INPUT_JSON ($(wc -c < "$INPUT_JSON" | tr -d ' ') bytes)"
 
 BOOTSTRAP="\$.global._BM_INPUT_JSON='$INPUT_JSON'; \$.evalFile(new File('$DRIVER'));"
 osascript -e "tell application \"$AE_APP\" to activate" \
-          -e "tell application \"$AE_APP\" to DoScript \"$BOOTSTRAP\""
+          -e "tell application \"$AE_APP\" to DoScript \"$BOOTSTRAP\" with override"
 
 echo "==> Waiting for roundtrip-report.json"
 for ((i = 0; i < 30; i++)); do

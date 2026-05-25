@@ -44,7 +44,11 @@ function addKeyframes(keyframes: any[], propertyName: string, elementId: string)
         var keyInInfluence = (inXDimension - 1) * -100;
         var lastKeyOutInfluence = (outXDimension) * 100;
         var duration = (nextKeyframe.t - keyframe.t) / getFrameRate();
-        var yNormal = nextValue[dimension] - keyframe.s[dimension];
+        var curVal = keyframe.s[dimension];
+        var nextVal = nextValue[dimension];
+        var yNormal = (typeof curVal === 'number' && typeof nextVal === 'number')
+          ? nextVal - curVal
+          : 0;
 
         var bezierInY = -(inYDimension - 1) * yNormal / duration;
         var bezierY = outYDimension * yNormal / duration;

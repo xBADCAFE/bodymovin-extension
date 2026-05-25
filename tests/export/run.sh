@@ -51,7 +51,7 @@ echo "    Bundle: $([ "$USE_JS_BUNDLE" = "1" ] && echo "JS (original)" || echo "
 # the driver; driver reads them off $.global instead of $.getenv.
 BOOTSTRAP="\$.global._BM_USE_JS_BUNDLE='$USE_JS_BUNDLE'; \$.global._BM_CORPUS_AEP='$CORPUS_AEP'; \$.global._BM_TARGET_COMP='$TARGET_COMP'; \$.evalFile(new File('$DRIVER'));"
 osascript -e "tell application \"$AE_APP\" to activate" \
-          -e "tell application \"$AE_APP\" to DoScript \"$BOOTSTRAP\""
+          -e "tell application \"$AE_APP\" to DoScript \"$BOOTSTRAP\" with override"
 
 # The driver writes the report immediately after triggering render, then
 # returns control to AE so app.scheduleTask callbacks can drive the actual
